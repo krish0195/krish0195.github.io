@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>LLMOps on Krishna Raj</title>
+    <link>http://localhost:1313/tags/llmops/</link>
+    <description>Recent content in LLMOps on Krishna Raj</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 06 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/llmops/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Modern AI Development: From Setup to Agentic Systems</title>
+      <link>http://localhost:1313/posts/mordern-ai/</link>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/mordern-ai/</guid>
+      <description>&lt;h3 id=&#34;-overview&#34;&gt;🔹 Overview&lt;/h3&gt;
+&lt;p&gt;This blog explains the modern AI stack—from environment setup using &lt;code&gt;uv&lt;/code&gt; to building intelligent agentic systems.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-environment-setup-uv&#34;&gt;🔹 Environment Setup (&lt;code&gt;uv&lt;/code&gt;)&lt;/h3&gt;
+&lt;p&gt;I used &lt;code&gt;uv&lt;/code&gt; as a fast and lightweight alternative to traditional tools like conda.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key commands:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Initialize project → &lt;code&gt;uv init&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install dependencies → &lt;code&gt;uv sync&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Add package → &lt;code&gt;uv add numpy&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Run script → &lt;code&gt;uv run main.py&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-ai-basics&#34;&gt;🔹 AI Basics&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;AI&lt;/strong&gt; → Simulates human intelligence&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ML&lt;/strong&gt; → Learns patterns from data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DL&lt;/strong&gt; → Uses neural networks&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GenAI&lt;/strong&gt; → Generates new content (text, images, code)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-types-of-ai&#34;&gt;🔹 Types of AI&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Discriminative AI&lt;/strong&gt; → Classification (predicts output)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Generative AI&lt;/strong&gt; → Creates new data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Agentic AI&lt;/strong&gt; → Takes actions and makes decisions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-transformers-revolution&#34;&gt;🔹 Transformers Revolution&lt;/h3&gt;
+&lt;p&gt;Key milestones:&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

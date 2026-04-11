@@ -1,0 +1,70 @@
+baseURL = "http://localhost:1313/"
+languageCode = "en-us"
+title = "Krishna Raj"
+theme = "PaperMod"
+
+# ✅ Enable Git-based last modified date
+enableGitInfo = false
+
+# -----------------------------
+# ✅ PARAMETERS
+# -----------------------------
+[params]
+author = "Krishna Raj"
+description = "AI Engineer | LLMOps | Data Science"
+
+ShowReadingTime = true
+ShowPostNavLinks = true
+ShowPostMeta = true
+ShowLastMod = true
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+
+# -----------------------------
+# ✅ PROFILE MODE (IMPORTANT)
+# -----------------------------
+[params.profileMode]
+enabled = true
+title = "Krishna Raj"
+subtitle = "AI Engineer | LLMOps | Data Science"
+imageUrl = "images/profile.jpg"
+imageWidth = 150
+imageHeight = 150
+
+# -----------------------------
+# ✅ MARKDOWN FIX (for HTML support)
+# -----------------------------
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+# -----------------------------
+# ✅ MENU
+# -----------------------------
+[menu]
+
+  [[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+  [[menu.main]]
+  name = "About"
+  url = "/about/"
+  weight = 2
+
+  [[menu.main]]
+  name = "Projects"
+  url = "/projects/"
+  weight = 3
+
+  [[menu.main]]
+  name = "Blog"
+  url = "/posts/"
+  weight = 4
+
+  [[menu.main]]
+  name = "Contact"
+  url = "/contact/"
+  weight = 5

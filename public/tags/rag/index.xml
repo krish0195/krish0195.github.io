@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>RAG on Krishna Raj</title>
+    <link>http://localhost:1313/tags/rag/</link>
+    <description>Recent content in RAG on Krishna Raj</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 22 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/rag/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding RAG Architecture</title>
+      <link>http://localhost:1313/posts/blog1/</link>
+      <pubDate>Sun, 22 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/blog1/</guid>
+      <description>&lt;h3 id=&#34;-what-is-rag&#34;&gt;🔹 What is RAG?&lt;/h3&gt;
+&lt;p&gt;Retrieval-Augmented Generation (RAG) combines:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Retrieval of documents&lt;/li&gt;
+&lt;li&gt;LLM-based answer generation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-why-use-rag&#34;&gt;🔹 Why use RAG?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Improves accuracy&lt;/li&gt;
+&lt;li&gt;Reduces hallucination&lt;/li&gt;
+&lt;li&gt;Uses real data&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-simple-flow&#34;&gt;🔹 Simple Flow&lt;/h3&gt;
+&lt;p&gt;User Question → Retrieve Docs → LLM → Answer&lt;/p&gt;
+&lt;h3 id=&#34;-conclusion&#34;&gt;🔹 Conclusion&lt;/h3&gt;
+&lt;p&gt;RAG is a powerful technique for building reliable AI systems.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

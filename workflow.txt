@@ -1,0 +1,66 @@
+# ================================
+# 🚀 HUGO PORTFOLIO WORKFLOW
+# ================================
+
+# -------------------------------
+# 🔹 1. CLEAN PROJECT (ONLY IF ERROR)
+# -------------------------------
+rmdir /s /q public
+rmdir /s /q resources
+
+# -------------------------------
+# 🔹 2. RUN LOCAL SERVER
+# -------------------------------
+hugo server -D
+
+# If changes not reflecting:
+hugo server -D --disableFastRender
+
+# If port issue:
+hugo server -D -p 1314
+
+# -------------------------------
+# 🔹 3. BUILD STATIC SITE
+# -------------------------------
+hugo --cleanDestinationDir
+
+# OR
+hugo
+
+# -------------------------------
+# 🔹 4. DEPLOY TO GITHUB PAGES
+# -------------------------------
+cd public
+git add .
+git commit -m "updated portfolio with blog"
+git push
+
+# ================================
+# 🔥 QUICK FLOW (DAILY USE)
+# ================================
+
+# Run locally
+hugo server -D
+
+# Build
+hugo
+
+# Deploy
+cd public
+git add .
+git commit -m "update"
+git push
+
+# ================================
+# ⚠️ IMPORTANT NOTES
+# ================================
+
+# 1. Use correct baseURL before deploy:
+# baseURL = "https://krish0195.github.io/"
+
+# 2. For local testing:
+# baseURL = "http://localhost:1313/"
+
+# 3. Do NOT edit public/ folder manually
+
+# 4. Only clean (rmdir) when errors occur

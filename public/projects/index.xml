@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Krishna Raj</title>
+    <link>http://localhost:1313/projects/</link>
+    <description>Recent content on Krishna Raj</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 22 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/projects/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>E-commerce AI Product Assistant</title>
+      <link>http://localhost:1313/projects/project1/</link>
+      <pubDate>Sun, 22 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/project1/</guid>
+      <description>&lt;h3 id=&#34;-description&#34;&gt;🔹 Description&lt;/h3&gt;
+&lt;p&gt;An AI-powered assistant that helps users find and recommend products.&lt;/p&gt;
+&lt;h3 id=&#34;-technologies-used&#34;&gt;🔹 Technologies Used&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;LangChain&lt;/li&gt;
+&lt;li&gt;RAG&lt;/li&gt;
+&lt;li&gt;Groq&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-features&#34;&gt;🔹 Features&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Product recommendation chatbot&lt;/li&gt;
+&lt;li&gt;Semantic search&lt;/li&gt;
+&lt;li&gt;Fast LLM responses&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-github&#34;&gt;🔹 GitHub&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yourusername/project-link&#34;&gt;https://github.com/yourusername/project-link&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RAG-Based Chatbot</title>
+      <link>http://localhost:1313/projects/project2/</link>
+      <pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/project2/</guid>
+      <description>&lt;h3 id=&#34;-description&#34;&gt;🔹 Description&lt;/h3&gt;
+&lt;p&gt;A chatbot that answers questions using custom documents.&lt;/p&gt;
+&lt;h3 id=&#34;-technologies-used&#34;&gt;🔹 Technologies Used&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;LangChain&lt;/li&gt;
+&lt;li&gt;HuggingFace Embeddings&lt;/li&gt;
+&lt;li&gt;Vector Database&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-features&#34;&gt;🔹 Features&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Context-aware answers&lt;/li&gt;
+&lt;li&gt;Document retrieval&lt;/li&gt;
+&lt;li&gt;Accurate responses&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-github&#34;&gt;🔹 GitHub&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yourusername/project-link&#34;&gt;https://github.com/yourusername/project-link&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

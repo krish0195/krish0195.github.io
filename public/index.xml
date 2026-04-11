@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Krishna Raj</title>
+    <link>http://localhost:1313/</link>
+    <description>Recent content on Krishna Raj</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 11 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding Text Representation: From Encoding to Embeddings</title>
+      <link>http://localhost:1313/posts/text-representation./</link>
+      <pubDate>Sat, 11 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/text-representation./</guid>
+      <description>&lt;h3 id=&#34;-overview&#34;&gt;🔹 Overview&lt;/h3&gt;
+&lt;p&gt;In Natural Language Processing (NLP), converting text into numbers (vectors) has evolved from simple counting methods to deep semantic understanding.&lt;/p&gt;
+&lt;p&gt;This shift allows machines to move beyond keyword matching to actually understand meaning and context.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-1-one-hot-encoding-ohe&#34;&gt;🔹 1. One-Hot Encoding (OHE)&lt;/h2&gt;
+&lt;p&gt;One-Hot Encoding is the most basic form of text representation. It focuses on word presence.&lt;/p&gt;
+&lt;p&gt;Logic:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create a vocabulary of unique words&lt;/li&gt;
+&lt;li&gt;Each word → vector with one &lt;code&gt;1&lt;/code&gt; and rest &lt;code&gt;0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Example:
+&amp;ldquo;AI&amp;rdquo; → [0, 1, 0, 0]&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Modern AI Development: From Setup to Agentic Systems</title>
+      <link>http://localhost:1313/posts/mordern-ai/</link>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/mordern-ai/</guid>
+      <description>&lt;h3 id=&#34;-overview&#34;&gt;🔹 Overview&lt;/h3&gt;
+&lt;p&gt;This blog explains the modern AI stack—from environment setup using &lt;code&gt;uv&lt;/code&gt; to building intelligent agentic systems.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-environment-setup-uv&#34;&gt;🔹 Environment Setup (&lt;code&gt;uv&lt;/code&gt;)&lt;/h3&gt;
+&lt;p&gt;I used &lt;code&gt;uv&lt;/code&gt; as a fast and lightweight alternative to traditional tools like conda.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key commands:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Initialize project → &lt;code&gt;uv init&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install dependencies → &lt;code&gt;uv sync&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Add package → &lt;code&gt;uv add numpy&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Run script → &lt;code&gt;uv run main.py&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-ai-basics&#34;&gt;🔹 AI Basics&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;AI&lt;/strong&gt; → Simulates human intelligence&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ML&lt;/strong&gt; → Learns patterns from data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DL&lt;/strong&gt; → Uses neural networks&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;GenAI&lt;/strong&gt; → Generates new content (text, images, code)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-types-of-ai&#34;&gt;🔹 Types of AI&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Discriminative AI&lt;/strong&gt; → Classification (predicts output)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Generative AI&lt;/strong&gt; → Creates new data&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Agentic AI&lt;/strong&gt; → Takes actions and makes decisions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;-transformers-revolution&#34;&gt;🔹 Transformers Revolution&lt;/h3&gt;
+&lt;p&gt;Key milestones:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>E-commerce AI Product Assistant</title>
+      <link>http://localhost:1313/projects/project1/</link>
+      <pubDate>Sun, 22 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/project1/</guid>
+      <description>&lt;h3 id=&#34;-description&#34;&gt;🔹 Description&lt;/h3&gt;
+&lt;p&gt;An AI-powered assistant that helps users find and recommend products.&lt;/p&gt;
+&lt;h3 id=&#34;-technologies-used&#34;&gt;🔹 Technologies Used&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;LangChain&lt;/li&gt;
+&lt;li&gt;RAG&lt;/li&gt;
+&lt;li&gt;Groq&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-features&#34;&gt;🔹 Features&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Product recommendation chatbot&lt;/li&gt;
+&lt;li&gt;Semantic search&lt;/li&gt;
+&lt;li&gt;Fast LLM responses&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-github&#34;&gt;🔹 GitHub&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yourusername/project-link&#34;&gt;https://github.com/yourusername/project-link&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Understanding RAG Architecture</title>
+      <link>http://localhost:1313/posts/blog1/</link>
+      <pubDate>Sun, 22 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/blog1/</guid>
+      <description>&lt;h3 id=&#34;-what-is-rag&#34;&gt;🔹 What is RAG?&lt;/h3&gt;
+&lt;p&gt;Retrieval-Augmented Generation (RAG) combines:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Retrieval of documents&lt;/li&gt;
+&lt;li&gt;LLM-based answer generation&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-why-use-rag&#34;&gt;🔹 Why use RAG?&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Improves accuracy&lt;/li&gt;
+&lt;li&gt;Reduces hallucination&lt;/li&gt;
+&lt;li&gt;Uses real data&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-simple-flow&#34;&gt;🔹 Simple Flow&lt;/h3&gt;
+&lt;p&gt;User Question → Retrieve Docs → LLM → Answer&lt;/p&gt;
+&lt;h3 id=&#34;-conclusion&#34;&gt;🔹 Conclusion&lt;/h3&gt;
+&lt;p&gt;RAG is a powerful technique for building reliable AI systems.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>How I Built an AI Chatbot</title>
+      <link>http://localhost:1313/posts/blog2/</link>
+      <pubDate>Sat, 21 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/blog2/</guid>
+      <description>&lt;h3 id=&#34;-overview&#34;&gt;🔹 Overview&lt;/h3&gt;
+&lt;p&gt;I built an AI chatbot using LangChain and Groq.&lt;/p&gt;
+&lt;h3 id=&#34;-steps&#34;&gt;🔹 Steps&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;Load documents&lt;/li&gt;
+&lt;li&gt;Create embeddings&lt;/li&gt;
+&lt;li&gt;Store in vector DB&lt;/li&gt;
+&lt;li&gt;Build RAG pipeline&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;-outcome&#34;&gt;🔹 Outcome&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Fast responses&lt;/li&gt;
+&lt;li&gt;Context-aware answers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-learning&#34;&gt;🔹 Learning&lt;/h3&gt;
+&lt;p&gt;Understanding RAG pipelines is key for AI applications.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>RAG-Based Chatbot</title>
+      <link>http://localhost:1313/projects/project2/</link>
+      <pubDate>Fri, 20 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/projects/project2/</guid>
+      <description>&lt;h3 id=&#34;-description&#34;&gt;🔹 Description&lt;/h3&gt;
+&lt;p&gt;A chatbot that answers questions using custom documents.&lt;/p&gt;
+&lt;h3 id=&#34;-technologies-used&#34;&gt;🔹 Technologies Used&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;LangChain&lt;/li&gt;
+&lt;li&gt;HuggingFace Embeddings&lt;/li&gt;
+&lt;li&gt;Vector Database&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-features&#34;&gt;🔹 Features&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Context-aware answers&lt;/li&gt;
+&lt;li&gt;Document retrieval&lt;/li&gt;
+&lt;li&gt;Accurate responses&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-github&#34;&gt;🔹 GitHub&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yourusername/project-link&#34;&gt;https://github.com/yourusername/project-link&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>About Me</title>
+      <link>http://localhost:1313/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/about/</guid>
+      <description>&lt;p&gt;Hi, I’m Krishna Raj 👋&lt;/p&gt;
+&lt;p&gt;I am an AI Engineer focused on building intelligent systems using:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Python&lt;/li&gt;
+&lt;li&gt;LangChain&lt;/li&gt;
+&lt;li&gt;RAG (Retrieval Augmented Generation)&lt;/li&gt;
+&lt;li&gt;AI Agents&lt;/li&gt;
+&lt;li&gt;SQL &amp;amp; Data Engineering&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I enjoy solving real-world problems using AI and building scalable applications.&lt;/p&gt;
+&lt;h3 id=&#34;-what-i-do&#34;&gt;🚀 What I Do&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Build AI-powered applications&lt;/li&gt;
+&lt;li&gt;Develop chatbots using LLMs&lt;/li&gt;
+&lt;li&gt;Work on data pipelines and analytics&lt;/li&gt;
+&lt;li&gt;Explore LLMOps and evaluation frameworks&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;-goal&#34;&gt;🎯 Goal&lt;/h3&gt;
+&lt;p&gt;To become a highly skilled AI Engineer and contribute to impactful AI products.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Contact</title>
+      <link>http://localhost:1313/contact/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/contact/</guid>
+      <description>&lt;p&gt;Feel free to reach out 👇&lt;/p&gt;
+&lt;p&gt;📧 Email: &lt;a href=&#34;mailto:yourmail@gmail.com&#34;&gt;yourmail@gmail.com&lt;/a&gt;&lt;br&gt;
+🔗 LinkedIn: &lt;a href=&#34;https://linkedin.com/in/yourprofile&#34;&gt;https://linkedin.com/in/yourprofile&lt;/a&gt;&lt;br&gt;
+💻 GitHub: &lt;a href=&#34;https://github.com/yourusername&#34;&gt;https://github.com/yourusername&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;I am open to:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Job opportunities&lt;/li&gt;
+&lt;li&gt;Freelance work&lt;/li&gt;
+&lt;li&gt;Collaborations&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+  </channel>
+</rss>

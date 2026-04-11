@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Machine Learning on Krishna Raj</title>
+    <link>http://localhost:1313/tags/machine-learning/</link>
+    <description>Recent content in Machine Learning on Krishna Raj</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 11 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/machine-learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Understanding Text Representation: From Encoding to Embeddings</title>
+      <link>http://localhost:1313/posts/text-representation./</link>
+      <pubDate>Sat, 11 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/text-representation./</guid>
+      <description>&lt;h3 id=&#34;-overview&#34;&gt;🔹 Overview&lt;/h3&gt;
+&lt;p&gt;In Natural Language Processing (NLP), converting text into numbers (vectors) has evolved from simple counting methods to deep semantic understanding.&lt;/p&gt;
+&lt;p&gt;This shift allows machines to move beyond keyword matching to actually understand meaning and context.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;-1-one-hot-encoding-ohe&#34;&gt;🔹 1. One-Hot Encoding (OHE)&lt;/h2&gt;
+&lt;p&gt;One-Hot Encoding is the most basic form of text representation. It focuses on word presence.&lt;/p&gt;
+&lt;p&gt;Logic:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create a vocabulary of unique words&lt;/li&gt;
+&lt;li&gt;Each word → vector with one &lt;code&gt;1&lt;/code&gt; and rest &lt;code&gt;0&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Example:
+&amp;ldquo;AI&amp;rdquo; → [0, 1, 0, 0]&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
