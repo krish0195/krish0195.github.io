@@ -15,12 +15,5 @@
       <guid>http://localhost:1313/posts/transformer-4/</guid>
       <description>Why Transformers need trigonometry to understand word order and a deep dive into the Query, Key, and Value (QKV) mechanism.</description>
     </item>
-    <item>
-      <title>Transformer 4: Positional Encoding &amp; The Math of Self-Attention</title>
-      <link>http://localhost:1313/posts/transformer-4_index/</link>
-      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/transformer-4_index/</guid>
-      <description>Why Transformers need trigonometry to understand word order and a deep dive into the Query, Key, and Value (QKV) mechanism.</description>
-    </item>
   </channel>
 </rss>
