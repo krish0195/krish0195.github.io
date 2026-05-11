@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Self-Attention on Krishna Raj</title>
+    <link>http://localhost:1313/tags/self-attention/</link>
+    <description>Recent content in Self-Attention on Krishna Raj</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 11 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/self-attention/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Transformer 4: Positional Encoding &amp; The Math of Self-Attention</title>
+      <link>http://localhost:1313/posts/transformer-4/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-4/</guid>
+      <description>Why Transformers need trigonometry to understand word order and a deep dive into the Query, Key, and Value (QKV) mechanism.</description>
+    </item>
+    <item>
+      <title>Transformer 4: Positional Encoding &amp; The Math of Self-Attention</title>
+      <link>http://localhost:1313/posts/transformer-4_index/</link>
+      <pubDate>Mon, 11 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-4_index/</guid>
+      <description>Why Transformers need trigonometry to understand word order and a deep dive into the Query, Key, and Value (QKV) mechanism.</description>
+    </item>
+  </channel>
+</rss>
