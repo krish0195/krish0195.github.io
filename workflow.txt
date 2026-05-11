@@ -52,6 +52,16 @@ git commit -m "update"
 git push
 
 # ================================
+# 🔥 Push to git hub
+# ================================
+
+git remote add origin https://github.com/krish0195/krish0195.github.io.git
+git add .
+git commit -m "Initial portfolio deploy"
+git branch -M main
+git push -u origin main --force
+
+# ================================
 # ⚠️ IMPORTANT NOTES
 # ================================
 

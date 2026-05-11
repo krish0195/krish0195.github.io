@@ -6,26 +6,78 @@
     <description>Recent content on Krishna Raj</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 11 Apr 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 10 May 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Run Pod RAG Pipeline</title>
+      <link>http://localhost:1313/posts/runpod-rag-pipeline/</link>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/runpod-rag-pipeline/</guid>
+      <description>&lt;h1 id=&#34;runpod-rag-pipeline&#34;&gt;RunPod RAG Pipeline&lt;/h1&gt;
+&lt;p&gt;Complete Retrieval-Augmented Generation (RAG) system using RunPod Serverless for LLM and Embeddings.&lt;/p&gt;
+&lt;h2 id=&#34;-features&#34;&gt;🚀 Features&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;✅ RunPod Serverless LLM (vLLM) for text generation&lt;/li&gt;
+&lt;li&gt;✅ RunPod Infinity Embedding Worker for embeddings&lt;/li&gt;
+&lt;li&gt;✅ PDF document processing&lt;/li&gt;
+&lt;li&gt;✅ FAISS vector store with persistence&lt;/li&gt;
+&lt;li&gt;✅ Source attribution in answers&lt;/li&gt;
+&lt;li&gt;✅ LangChain orchestration&lt;/li&gt;
+&lt;li&gt;✅ Jupyter notebook interface&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;-project-structure&#34;&gt;📁 Project Structure&lt;/h2&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;runpod-rag/
+├── data/                          # Place your PDF files here
+├── vector_store/                  # Auto-created: stores FAISS index (gitignored)
+├── runpod_rag_pdf.ipynb          # Main notebook with PDF support ⭐
+├── embed_api_test.py              # Standalone embedding endpoint test script
+└── llm_api_test.py                # Standalone LLM endpoint test script
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;-quick-start&#34;&gt;🎯 Quick Start&lt;/h2&gt;
+&lt;h3 id=&#34;1-install-dependencies&#34;&gt;1. Install Dependencies&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;pip install langchain langchain-runpod langchain-community langchain-classic faiss-cpu requests pypdf
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;2-add-your-pdfs&#34;&gt;2. Add Your PDFs&lt;/h3&gt;
+&lt;p&gt;Place your PDF documents in the &lt;code&gt;data/&lt;/code&gt; folder:&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Transformer 2: Architecture &amp; Self-Attention</title>
+      <link>http://localhost:1313/posts/transformer-2/</link>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-2/</guid>
+      <description>A deep dive into the internal mechanisms of Transformers, comparing them with LSTMs and exploring the magic of dynamic embeddings through Self-Attention.</description>
+    </item>
+    <item>
+      <title>Transformer 3: Deep Dive into Encoder Components</title>
+      <link>http://localhost:1313/posts/transformer-3/</link>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-3/</guid>
+      <description>Exploring the power of stacking layers, the mechanics of residual connections, and why the FFN is critical for non-linear pattern recognition.</description>
+    </item>
+    <item>
+      <title>Transformer 1: Fundamentals &amp; Embeddings</title>
+      <link>http://localhost:1313/posts/transformer-1/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-1/</guid>
+      <description>A deep dive into Transformer architectures, training methodologies, and selecting the right embedding models for SOTA performance.</description>
+    </item>
+    <item>
       <title>Understanding Text Representation: From Encoding to Embeddings</title>
-      <link>http://localhost:1313/posts/text-representation./</link>
-      <pubDate>Sat, 11 Apr 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/text-representation./</guid>
-      <description>&lt;h3 id=&#34;-overview&#34;&gt;🔹 Overview&lt;/h3&gt;
-&lt;p&gt;In Natural Language Processing (NLP), converting text into numbers (vectors) has evolved from simple counting methods to deep semantic understanding.&lt;/p&gt;
-&lt;p&gt;This shift allows machines to move beyond keyword matching to actually understand meaning and context.&lt;/p&gt;
+      <link>http://localhost:1313/posts/text-represent/</link>
+      <pubDate>Sat, 18 Apr 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/text-represent/</guid>
+      <description>&lt;hr&gt;
+&lt;h2 id=&#34;-overview&#34;&gt;🔹 Overview&lt;/h2&gt;
+&lt;p&gt;In Natural Language Processing (NLP), converting text into numerical form (vectors) has evolved from simple counting techniques to deep semantic understanding.&lt;/p&gt;
+&lt;p&gt;This transformation enables machines to move beyond keyword matching and truly understand meaning and context.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id=&#34;-1-one-hot-encoding-ohe&#34;&gt;🔹 1. One-Hot Encoding (OHE)&lt;/h2&gt;
+&lt;h2 id=&#34;-types-of-text-representation&#34;&gt;🔹 Types of Text Representation&lt;/h2&gt;
+&lt;h3 id=&#34;1-one-hot-encoding-ohe&#34;&gt;1. One-Hot Encoding (OHE)&lt;/h3&gt;
 &lt;p&gt;One-Hot Encoding is the most basic form of text representation. It focuses on word presence.&lt;/p&gt;
-&lt;p&gt;Logic:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Logic:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Create a vocabulary of unique words&lt;/li&gt;
 &lt;li&gt;Each word → vector with one &lt;code&gt;1&lt;/code&gt; and rest &lt;code&gt;0&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Example:
-&amp;ldquo;AI&amp;rdquo; → [0, 1, 0, 0]&lt;/p&gt;</description>
+&lt;p&gt;&lt;strong&gt;Example:&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>Modern AI Development: From Setup to Agentic Systems</title>

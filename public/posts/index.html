@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Blog | Krishna Raj</title>
+<title>My Knowledge sharing  | Krishna Raj</title>
 <meta name="keywords" content="">
 <meta name="description" content="Sharing my learnings in AI, LLMs, and Data Science.">
 <meta name="author" content="Krishna Raj">
@@ -133,7 +133,7 @@
 <main class="main"> 
 <header class="page-header"><div class="breadcrumbs"><a href="http://localhost:1313/">Home</a></div>
   <h1>
-    Blog
+    My Knowledge sharing 
   </h1>
 </header>
 <div class="post-content"><p>Sharing my learnings in AI, LLMs, and Data Science.</p>
@@ -143,19 +143,75 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Run Pod RAG Pipeline
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>RunPod RAG Pipeline Complete Retrieval-Augmented Generation (RAG) system using RunPod Serverless for LLM and Embeddings.
+🚀 Features ✅ RunPod Serverless LLM (vLLM) for text generation ✅ RunPod Infinity Embedding Worker for embeddings ✅ PDF document processing ✅ FAISS vector store with persistence ✅ Source attribution in answers ✅ LangChain orchestration ✅ Jupyter notebook interface 📁 Project Structure runpod-rag/ ├── data/ # Place your PDF files here ├── vector_store/ # Auto-created: stores FAISS index (gitignored) ├── runpod_rag_pdf.ipynb # Main notebook with PDF support ⭐ ├── embed_api_test.py # Standalone embedding endpoint test script └── llm_api_test.py # Standalone LLM endpoint test script 🎯 Quick Start 1. Install Dependencies pip install langchain langchain-runpod langchain-community langchain-classic faiss-cpu requests pypdf 2. Add Your PDFs Place your PDF documents in the data/ folder:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-10 00:00:00 +0000 UTC'>May 10, 2026</span>&nbsp;·&nbsp;<span>4 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Run Pod RAG Pipeline" href="http://localhost:1313/posts/runpod-rag-pipeline/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Transformer 2: Architecture &amp; Self-Attention
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Evolution of NLP Models Before Transformers, sequence data was processed using models that had significant limitations regarding speed and memory.
+RNN / LSTM / GRU (2014-2015): These models processed data sequentially (step-by-step), making them slow and prone to the “vanishing gradient” issue, which limited their long-term memory. Encoder-Decoder with Attention (2015-2016): Introduced the concept of focusing on specific parts of the input, primarily for machine translation. The Transformer (2017-2018): Introduced in the paper “Attention is All You Need,” this model replaced recurrence with Self-Attention, allowing for parallel processing of all tokens at once. Transformer vs. LSTM Processing style and speed are the primary differentiators between older recurrent architectures and modern Transformers.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-10 00:00:00 +0000 UTC'>May 10, 2026</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Transformer 2: Architecture & Self-Attention" href="http://localhost:1313/posts/transformer-2/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Transformer 3: Deep Dive into Encoder Components
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>1. The Power of Stacking (Why 6 Layers?) In the original Transformer research paper, the authors used 6 encoder layers and 6 decoder layers. However, this number is a Hyperparameter and is not fixed; it is determined experimentally based on the task.
+Vertical Stacking: Stacking layers vertically allows the model to capture deeper relationships and build hierarchical meaning. Hierarchical Understanding: Layer 1: Learns basic word relations. Layer 3: Begins to understand phrase meanings. Layer 6: Achieves full sentence-level understanding. Deep Context: Modern models like BERT and GPT stack 12 to 96&#43; layers to achieve deep contextual reasoning. 2. Residual Connections (The Skip Connection) As neural networks grow deeper, they often suffer from Vanishing Gradients, where weights become too small, training becomes unstable, and information is lost.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-10 00:00:00 +0000 UTC'>May 10, 2026</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Transformer 3: Deep Dive into Encoder Components" href="http://localhost:1313/posts/transformer-3/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Transformer 1: Fundamentals &amp; Embeddings
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Evolution of Neural Architectures The journey to modern AI started with basic Neural Networks (NN) and evolved through specialized models to reach the current State-of-the-Art (SOTA).
+Neural Networks (NN): Composed of an Input Layer, Hidden Layer, and Output Layer. Word2Vec: Utilizes the intermediate output of the Hidden Layer (HL) to create representations. Transformers: The current backbone for SOTA models like GPT (OpenAI), Gemini (Google), and Hugging Face (HF) models. Figure 1: Evolution from NN to Transformer architectures.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-09 00:00:00 +0000 UTC'>May 9, 2026</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Transformer 1: Fundamentals & Embeddings" href="http://localhost:1313/posts/transformer-1/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Understanding Text Representation: From Encoding to Embeddings
     </h2>
   </header>
   <div class="entry-content">
-    <p>🔹 Overview In Natural Language Processing (NLP), converting text into numbers (vectors) has evolved from simple counting methods to deep semantic understanding.
-This shift allows machines to move beyond keyword matching to actually understand meaning and context.
-🔹 1. One-Hot Encoding (OHE) One-Hot Encoding is the most basic form of text representation. It focuses on word presence.
+    <p> 🔹 Overview In Natural Language Processing (NLP), converting text into numerical form (vectors) has evolved from simple counting techniques to deep semantic understanding.
+This transformation enables machines to move beyond keyword matching and truly understand meaning and context.
+🔹 Types of Text Representation 1. One-Hot Encoding (OHE) One-Hot Encoding is the most basic form of text representation. It focuses on word presence.
 Logic:
-Create a vocabulary of unique words Each word → vector with one 1 and rest 0 Example: “AI” → [0, 1, 0, 0]
+Create a vocabulary of unique words Each word → vector with one 1 and rest 0 Example:
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2026-04-11 00:00:00 +0000 UTC'>April 11, 2026</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
-  <a class="entry-link" aria-label="post link to Understanding Text Representation: From Encoding to Embeddings" href="http://localhost:1313/posts/text-representation./"></a>
+  <footer class="entry-footer"><span title='2026-04-18 00:00:00 +0000 UTC'>April 18, 2026</span>&nbsp;·&nbsp;<span>3 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Understanding Text Representation: From Encoding to Embeddings" href="http://localhost:1313/posts/text-represent/"></a>
 </article>
 
 <article class="post-entry"> 

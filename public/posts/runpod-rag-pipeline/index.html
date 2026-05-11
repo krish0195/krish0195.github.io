@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Run Pod RAG Pipeline | Krishna Raj</title>
+<meta name="keywords" content="">
+<meta name="description" content="RunPod RAG Pipeline
+Complete Retrieval-Augmented Generation (RAG) system using RunPod Serverless for LLM and Embeddings.
+🚀 Features
+
+✅ RunPod Serverless LLM (vLLM) for text generation
+✅ RunPod Infinity Embedding Worker for embeddings
+✅ PDF document processing
+✅ FAISS vector store with persistence
+✅ Source attribution in answers
+✅ LangChain orchestration
+✅ Jupyter notebook interface
+
+📁 Project Structure
+runpod-rag/
+├── data/                          # Place your PDF files here
+├── vector_store/                  # Auto-created: stores FAISS index (gitignored)
+├── runpod_rag_pdf.ipynb          # Main notebook with PDF support ⭐
+├── embed_api_test.py              # Standalone embedding endpoint test script
+└── llm_api_test.py                # Standalone LLM endpoint test script
+🎯 Quick Start
+1. Install Dependencies
+pip install langchain langchain-runpod langchain-community langchain-classic faiss-cpu requests pypdf
+2. Add Your PDFs
+Place your PDF documents in the data/ folder:">
+<meta name="author" content="Krishna Raj">
+<link rel="canonical" href="http://localhost:1313/posts/runpod-rag-pipeline/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/runpod-rag-pipeline/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Krishna Raj (Alt + H)">Krishna Raj</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/contact/" title="Contact">
+                    <span>Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">My Knowledge sharing </a></div>
+    <h1 class="post-title entry-hint-parent">
+      Run Pod RAG Pipeline
+    </h1>
+    <div class="post-meta"><span title='2026-05-10 00:00:00 +0000 UTC'>May 10, 2026</span>&nbsp;·&nbsp;<span>4 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="runpod-rag-pipeline">RunPod RAG Pipeline<a hidden class="anchor" aria-hidden="true" href="#runpod-rag-pipeline">#</a></h1>
+<p>Complete Retrieval-Augmented Generation (RAG) system using RunPod Serverless for LLM and Embeddings.</p>
+<h2 id="-features">🚀 Features<a hidden class="anchor" aria-hidden="true" href="#-features">#</a></h2>
+<ul>
+<li>✅ RunPod Serverless LLM (vLLM) for text generation</li>
+<li>✅ RunPod Infinity Embedding Worker for embeddings</li>
+<li>✅ PDF document processing</li>
+<li>✅ FAISS vector store with persistence</li>
+<li>✅ Source attribution in answers</li>
+<li>✅ LangChain orchestration</li>
+<li>✅ Jupyter notebook interface</li>
+</ul>
+<h2 id="-project-structure">📁 Project Structure<a hidden class="anchor" aria-hidden="true" href="#-project-structure">#</a></h2>
+<pre tabindex="0"><code>runpod-rag/
+├── data/                          # Place your PDF files here
+├── vector_store/                  # Auto-created: stores FAISS index (gitignored)
+├── runpod_rag_pdf.ipynb          # Main notebook with PDF support ⭐
+├── embed_api_test.py              # Standalone embedding endpoint test script
+└── llm_api_test.py                # Standalone LLM endpoint test script
+</code></pre><h2 id="-quick-start">🎯 Quick Start<a hidden class="anchor" aria-hidden="true" href="#-quick-start">#</a></h2>
+<h3 id="1-install-dependencies">1. Install Dependencies<a hidden class="anchor" aria-hidden="true" href="#1-install-dependencies">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip install langchain langchain-runpod langchain-community langchain-classic faiss-cpu requests pypdf
+</span></span></code></pre></div><h3 id="2-add-your-pdfs">2. Add Your PDFs<a hidden class="anchor" aria-hidden="true" href="#2-add-your-pdfs">#</a></h3>
+<p>Place your PDF documents in the <code>data/</code> folder:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cp your_document.pdf data/
+</span></span></code></pre></div><h3 id="3-configure-api-keys">3. Configure API Keys<a hidden class="anchor" aria-hidden="true" href="#3-configure-api-keys">#</a></h3>
+<p>Open <code>runpod_rag_pdf.ipynb</code> and update:</p>
+<ul>
+<li><code>RUNPOD_API_KEY</code> - Your RunPod API key</li>
+<li><code>RUNPOD_LLM_ENDPOINT_ID</code> - Your vLLM endpoint ID</li>
+<li><code>RUNPOD_EMBEDDING_ENDPOINT_ID</code> - Your Infinity Embedding endpoint ID</li>
+</ul>
+<h3 id="4-run-the-notebook">4. Run the Notebook<a hidden class="anchor" aria-hidden="true" href="#4-run-the-notebook">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>jupyter notebook runpod_rag_pdf.ipynb
+</span></span></code></pre></div><p>Run all cells sequentially and start asking questions about your documents!</p>
+<h2 id="-notebook">📚 Notebook<a hidden class="anchor" aria-hidden="true" href="#-notebook">#</a></h2>
+<h3 id="runpod_rag_pdfipynb"><code>runpod_rag_pdf.ipynb</code><a hidden class="anchor" aria-hidden="true" href="#runpod_rag_pdfipynb">#</a></h3>
+<p><strong>Full-featured RAG pipeline with PDF support</strong></p>
+<ul>
+<li>Loads PDFs from <code>data/</code> folder</li>
+<li>Saves vector store to disk for fast reloading</li>
+<li>Comprehensive comments and explanations</li>
+<li>Production-ready code</li>
+</ul>
+<h2 id="-how-it-works">🔧 How It Works<a hidden class="anchor" aria-hidden="true" href="#-how-it-works">#</a></h2>
+<h3 id="1-document-loading">1. Document Loading<a hidden class="anchor" aria-hidden="true" href="#1-document-loading">#</a></h3>
+<ul>
+<li>PDFs are loaded from <code>data/</code> folder using PyPDFLoader</li>
+<li>Each page is extracted as a separate document</li>
+<li>Metadata (filename, page number) is preserved</li>
+</ul>
+<h3 id="2-text-chunking">2. Text Chunking<a hidden class="anchor" aria-hidden="true" href="#2-text-chunking">#</a></h3>
+<ul>
+<li>Documents are split into chunks using RecursiveCharacterTextSplitter</li>
+<li>Chunk size: 800 characters (configurable)</li>
+<li>Overlap: 150 characters to preserve context</li>
+</ul>
+<h3 id="3-embedding-generation">3. Embedding Generation<a hidden class="anchor" aria-hidden="true" href="#3-embedding-generation">#</a></h3>
+<ul>
+<li>Each chunk is sent to RunPod Infinity Embedding worker</li>
+<li>Returns 384-dimensional vectors (BAAI/bge-small-en-v1.5)</li>
+<li>Uses OpenAI-compatible API format</li>
+</ul>
+<h3 id="4-vector-storage">4. Vector Storage<a hidden class="anchor" aria-hidden="true" href="#4-vector-storage">#</a></h3>
+<ul>
+<li>FAISS index stores embeddings for fast similarity search</li>
+<li>Saved to <code>vector_store/</code> folder for persistence</li>
+<li>Loads instantly on subsequent runs (no re-embedding needed)</li>
+</ul>
+<h3 id="5-question-answering">5. Question Answering<a hidden class="anchor" aria-hidden="true" href="#5-question-answering">#</a></h3>
+<ul>
+<li>User question is embedded using the same model</li>
+<li>FAISS finds top-k most similar document chunks</li>
+<li>Chunks + question are sent to RunPod LLM</li>
+<li>LLM generates answer grounded in retrieved context</li>
+</ul>
+<h2 id="-customization">🎨 Customization<a hidden class="anchor" aria-hidden="true" href="#-customization">#</a></h2>
+<h3 id="adjust-chunk-size">Adjust Chunk Size<a hidden class="anchor" aria-hidden="true" href="#adjust-chunk-size">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>text_splitter <span style="color:#f92672">=</span> RecursiveCharacterTextSplitter(
+</span></span><span style="display:flex;"><span>    chunk_size<span style="color:#f92672">=</span><span style="color:#ae81ff">1500</span>,      <span style="color:#75715e"># Increase for more context per chunk</span>
+</span></span><span style="display:flex;"><span>    chunk_overlap<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>,    <span style="color:#75715e"># Increase to preserve more context</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h3 id="change-number-of-retrieved-documents">Change Number of Retrieved Documents<a hidden class="anchor" aria-hidden="true" href="#change-number-of-retrieved-documents">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>retriever<span style="color:#f92672">=</span>vectorstore<span style="color:#f92672">.</span>as_retriever(
+</span></span><span style="display:flex;"><span>    search_kwargs<span style="color:#f92672">=</span>{<span style="color:#e6db74">&#34;k&#34;</span>: <span style="color:#ae81ff">5</span>}  <span style="color:#75715e"># Retrieve top 5 instead of 3</span>
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h3 id="modify-llm-parameters">Modify LLM Parameters<a hidden class="anchor" aria-hidden="true" href="#modify-llm-parameters">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>llm <span style="color:#f92672">=</span> ChatRunPod(
+</span></span><span style="display:flex;"><span>    endpoint_id<span style="color:#f92672">=</span>RUNPOD_LLM_ENDPOINT_ID,
+</span></span><span style="display:flex;"><span>    model_kwargs<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;temperature&#34;</span>: <span style="color:#ae81ff">0.5</span>,    <span style="color:#75715e"># Lower = more deterministic</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;max_tokens&#34;</span>: <span style="color:#ae81ff">3000</span>,    <span style="color:#75715e"># Longer responses</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>)
+</span></span></code></pre></div><h2 id="-rebuilding-vector-store">🔄 Rebuilding Vector Store<a hidden class="anchor" aria-hidden="true" href="#-rebuilding-vector-store">#</a></h2>
+<p>When you add new PDFs or modify existing ones:</p>
+<ol>
+<li>
+<p>Delete the <code>vector_store/</code> folder:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rm -rf vector_store/
+</span></span></code></pre></div></li>
+<li>
+<p>Re-run the notebook - it will automatically rebuild the index</p>
+</li>
+</ol>
+<p>Or use the rebuild cell in the vector store section of the notebook.</p>
+<h2 id="-understanding-similarity-scores">📊 Understanding Similarity Scores<a hidden class="anchor" aria-hidden="true" href="#-understanding-similarity-scores">#</a></h2>
+<p>When using <code>similarity_search_with_score()</code>:</p>
+<ul>
+<li><strong>0.0 - 0.3</strong>: Highly relevant (very similar to query)</li>
+<li><strong>0.3 - 0.5</strong>: Moderately relevant</li>
+<li><strong>0.5+</strong>: Less relevant</li>
+</ul>
+<p>Lower scores = better match (it&rsquo;s a distance metric, not similarity score)</p>
+<h2 id="-troubleshooting">🛠️ Troubleshooting<a hidden class="anchor" aria-hidden="true" href="#-troubleshooting">#</a></h2>
+<h3 id="no-pdf-files-found">&ldquo;No PDF files found&rdquo;<a hidden class="anchor" aria-hidden="true" href="#no-pdf-files-found">#</a></h3>
+<ul>
+<li>Make sure PDFs are in the <code>data/</code> folder</li>
+<li>Check file extensions are <code>.pdf</code> (lowercase)</li>
+</ul>
+<h3 id="vector-store-loading-error">&ldquo;Vector store loading error&rdquo;<a hidden class="anchor" aria-hidden="true" href="#vector-store-loading-error">#</a></h3>
+<ul>
+<li>Delete <code>vector_store/</code> folder and rebuild</li>
+<li>Ensure embeddings object uses same model</li>
+</ul>
+<h3 id="embedding-job-failed">&ldquo;Embedding job failed&rdquo;<a hidden class="anchor" aria-hidden="true" href="#embedding-job-failed">#</a></h3>
+<ul>
+<li>Check RunPod API key is correct</li>
+<li>Verify embedding endpoint ID</li>
+<li>Check endpoint is deployed and active</li>
+</ul>
+<h3 id="slow-embedding-process">&ldquo;Slow embedding process&rdquo;<a hidden class="anchor" aria-hidden="true" href="#slow-embedding-process">#</a></h3>
+<ul>
+<li>Normal for first run (each chunk is embedded)</li>
+<li>Subsequent runs load from disk (instant)</li>
+<li>Consider using fewer/smaller documents for testing</li>
+</ul>
+<h2 id="-api-test-scripts">🧪 API Test Scripts<a hidden class="anchor" aria-hidden="true" href="#-api-test-scripts">#</a></h2>
+<p>Use these to verify your endpoints before running the full notebook:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Test embedding endpoint</span>
+</span></span><span style="display:flex;"><span>python embed_api_test.py
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Test LLM endpoint</span>
+</span></span><span style="display:flex;"><span>python llm_api_test.py
+</span></span></code></pre></div><p>Update the <code>EMBEDDING_ENDPOINT_ID</code>, <code>LLM_ENDPOINT_ID</code>, and <code>API_KEY</code> variables in each script before running.</p>
+<h2 id="-runpod-setup">🔑 RunPod Setup<a hidden class="anchor" aria-hidden="true" href="#-runpod-setup">#</a></h2>
+<h3 id="required-endpoints">Required Endpoints:<a hidden class="anchor" aria-hidden="true" href="#required-endpoints">#</a></h3>
+<ol>
+<li>
+<p><strong>vLLM Endpoint</strong> (for text generation)</p>
+<ul>
+<li>Model: Any supported LLM (e.g., Llama, Mistral)</li>
+<li>Get endpoint ID from RunPod dashboard</li>
+</ul>
+</li>
+<li>
+<p><strong>Infinity Embedding Endpoint</strong> (for embeddings)</p>
+<ul>
+<li>Worker: <code>runpod-workers/worker-infinity-embedding</code></li>
+<li>Model: BAAI/bge-small-en-v1.5</li>
+<li>Get endpoint ID from RunPod dashboard</li>
+</ul>
+</li>
+</ol>
+<h3 id="api-key">API Key:<a hidden class="anchor" aria-hidden="true" href="#api-key">#</a></h3>
+<ul>
+<li>Get from: RunPod Dashboard → Settings → API Keys</li>
+</ul>
+<h2 id="-additional-resources">📖 Additional Resources<a hidden class="anchor" aria-hidden="true" href="#-additional-resources">#</a></h2>
+<ul>
+<li><a href="https://github.com/krish0195/runpod-rag">Git code</a></li>
+<li><a href="https://docs.runpod.io/">RunPod Documentation</a></li>
+<li><a href="https://github.com/runpod-workers/worker-infinity-embedding">Infinity Embedding Worker</a></li>
+<li><a href="https://python.langchain.com/">LangChain Documentation</a></li>
+<li><a href="https://github.com/facebookresearch/faiss">FAISS Documentation</a></li>
+</ul>
+<h2 id="-contributing">🤝 Contributing<a hidden class="anchor" aria-hidden="true" href="#-contributing">#</a></h2>
+<p>Feel free to customize and extend this pipeline for your use case!</p>
+<h2 id="-license">📄 License<a hidden class="anchor" aria-hidden="true" href="#-license">#</a></h2>
+<p>This project is open source and available for educational and commercial use.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/posts/transformer-2/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Transformer 2: Architecture &amp; Self-Attention</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Krishna Raj</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

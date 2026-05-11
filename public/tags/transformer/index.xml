@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Transformer on Krishna Raj</title>
+    <link>http://localhost:1313/tags/transformer/</link>
+    <description>Recent content in Transformer on Krishna Raj</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 10 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/transformer/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Transformer 2: Architecture &amp; Self-Attention</title>
+      <link>http://localhost:1313/posts/transformer-2/</link>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-2/</guid>
+      <description>A deep dive into the internal mechanisms of Transformers, comparing them with LSTMs and exploring the magic of dynamic embeddings through Self-Attention.</description>
+    </item>
+    <item>
+      <title>Transformer 3: Deep Dive into Encoder Components</title>
+      <link>http://localhost:1313/posts/transformer-3/</link>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-3/</guid>
+      <description>Exploring the power of stacking layers, the mechanics of residual connections, and why the FFN is critical for non-linear pattern recognition.</description>
+    </item>
+    <item>
+      <title>Transformer 1: Fundamentals &amp; Embeddings</title>
+      <link>http://localhost:1313/posts/transformer-1/</link>
+      <pubDate>Sat, 09 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-1/</guid>
+      <description>A deep dive into Transformer architectures, training methodologies, and selecting the right embedding models for SOTA performance.</description>
+    </item>
+  </channel>
+</rss>

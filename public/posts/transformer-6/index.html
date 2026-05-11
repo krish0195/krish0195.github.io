@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Krishna Raj</title>
+<meta name="keywords" content="">
+<meta name="description" content="\
+Deep Dive: Transformer Architecture &amp; Mechanics
+Class Date: May 3, 2026
+Topic: Positional Encoding, Self-Attention, and Layer Normalization
+
+1. The Core Challenge: Parallelism
+[cite_start]Transformers process all tokens in a sentence simultaneously (in parallel)[cite: 30]. [cite_start]While this makes them incredibly fast compared to older models, it creates a problem: the model does not inherently know the order of words[cite: 31]. [cite_start]For example, without extra info, &ldquo;Dog bites man&rdquo; and &ldquo;man bites dog&rdquo; look exactly the same to the model[cite: 36, 37].">
+<meta name="author" content="Krishna Raj">
+<link rel="canonical" href="http://localhost:1313/posts/transformer-6/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/transformer-6/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Krishna Raj (Alt + H)">Krishna Raj</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/contact/" title="Contact">
+                    <span>Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">My Knowledge sharing </a></div>
+    <h1 class="post-title entry-hint-parent">
+      
+    </h1>
+    <div class="post-meta"><span>3 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span>
+
+</div>
+  </header> 
+  <div class="post-content"><p>\</p>
+<h1 id="deep-dive-transformer-architecture--mechanics">Deep Dive: Transformer Architecture &amp; Mechanics<a hidden class="anchor" aria-hidden="true" href="#deep-dive-transformer-architecture--mechanics">#</a></h1>
+<p><strong>Class Date:</strong> May 3, 2026<br>
+<strong>Topic:</strong> Positional Encoding, Self-Attention, and Layer Normalization</p>
+<hr>
+<h2 id="1-the-core-challenge-parallelism">1. The Core Challenge: Parallelism<a hidden class="anchor" aria-hidden="true" href="#1-the-core-challenge-parallelism">#</a></h2>
+<p>[cite_start]Transformers process all tokens in a sentence simultaneously (in parallel)[cite: 30]. [cite_start]While this makes them incredibly fast compared to older models, it creates a problem: the model does not inherently know the order of words[cite: 31]. [cite_start]For example, without extra info, &ldquo;Dog bites man&rdquo; and &ldquo;man bites dog&rdquo; look exactly the same to the model[cite: 36, 37].</p>
+<h3 id="the-solution-positional-encoding-pe">The Solution: Positional Encoding (PE)<a hidden class="anchor" aria-hidden="true" href="#the-solution-positional-encoding-pe">#</a></h3>
+<p>[cite_start]Positional Encoding is a technique used to inject information about the order of tokens into their embeddings[cite: 28].</p>
+<ul>
+<li>[cite_start]<strong>Mechanism:</strong> We add a PE vector to the original word embedding[cite: 81, 83].</li>
+<li>[cite_start]<strong>Dimension:</strong> The PE vector must have the same dimension as the embedding ($d_{model}$)[cite: 85, 146].</li>
+<li>[cite_start]<strong>Formula:</strong> We use Sine and Cosine functions of different frequencies[cite: 132]:
+<ul>
+<li>$PE_{(pos, 2i)} = \sin(pos / 10000^{2i/d_{model}})$</li>
+<li>$PE_{(pos, 2i+1)} = \cos(pos / 10000^{2i/d_{model}})$</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="2-self-attention-mechanism">2. Self-Attention Mechanism<a hidden class="anchor" aria-hidden="true" href="#2-self-attention-mechanism">#</a></h2>
+<p>[cite_start]Self-attention allows each word in a sentence to &ldquo;attend&rdquo; to every other word to find relevant context[cite: 388].</p>
+<h3 id="the-qkv-transformation">The QKV Transformation<a hidden class="anchor" aria-hidden="true" href="#the-qkv-transformation">#</a></h3>
+<p>[cite_start]To compute attention, every input embedding is transformed into three distinct vectors using learnable weight matrices ($W_Q, W_K, W_V$)[cite: 521, 522, 673, 674]:</p>
+<ol>
+<li>[cite_start]<strong>Query (Q):</strong> What I am looking for[cite: 703].</li>
+<li>[cite_start]<strong>Key (K):</strong> What I contain/offer[cite: 705].</li>
+<li>[cite_start]<strong>Value (V):</strong> The actual information I provide[cite: 706].</li>
+</ol>
+<h3 id="cite_startstep-by-step-calculationcite-957">[cite_start]Step-by-Step Calculation[cite: 957]:<a hidden class="anchor" aria-hidden="true" href="#cite_startstep-by-step-calculationcite-957">#</a></h3>
+<ol>
+<li>[cite_start]<strong>Compute Scores:</strong> Perform a Dot Product between Query and Key ($Q \cdot K^T$)[cite: 222, 998].</li>
+<li>[cite_start]<strong>Scaling:</strong> Divide the score by $\sqrt{d_k}$ (the dimension of the key vector) to ensure training stability and smooth gradients[cite: 680, 692, 697].</li>
+<li>[cite_start]<strong>Softmax:</strong> Apply a Softmax layer to convert scores into probabilities (weights) that sum to 1[cite: 700, 715].</li>
+<li>[cite_start]<strong>Weighted Sum:</strong> Multiply these weights by the Value vector (V) to get the final <strong>Contextual Vector</strong>[cite: 721, 722].</li>
+</ol>
+<hr>
+<h2 id="3-multi-head-attention">3. Multi-Head Attention<a hidden class="anchor" aria-hidden="true" href="#3-multi-head-attention">#</a></h2>
+<p>[cite_start]A single &ldquo;head&rdquo; of attention can only capture one perspective at a time[cite: 738]. [cite_start]Multi-Head Attention uses multiple sets of $Q, K, V$ matrices in parallel to capture various relationships simultaneously[cite: 726, 732].</p>
+<ul>
+<li>[cite_start]<strong>Example of Ambiguity:</strong> &ldquo;The chicken is ready to eat&rdquo;[cite: 741].
+<ul>
+<li>[cite_start]Head 1 might focus on the chicken being <strong>cooked</strong>[cite: 743].</li>
+<li>[cite_start]Head 2 might focus on the chicken being <strong>hungry</strong>[cite: 744].</li>
+</ul>
+</li>
+<li>[cite_start]<strong>Original Research Paper (ORP):</strong> Typically uses <strong>8 heads</strong>[cite: 750, 809].</li>
+</ul>
+<hr>
+<h2 id="4-layer-normalization">4. Layer Normalization<a hidden class="anchor" aria-hidden="true" href="#4-layer-normalization">#</a></h2>
+<p>[cite_start]Layer Normalization standardizes the features of each vector to improve training stability[cite: 1067].</p>
+<p>[cite_start]<strong>Formula:</strong> $\text{LayerNorm}(x) = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}} \cdot \gamma + \beta$ [cite: 1070]</p>
+<ul>
+<li>[cite_start]<strong>$\mu$ (Mean):</strong> Centers the data[cite: 1074, 1092].</li>
+<li>[cite_start]<strong>$\sigma^2$ (Variance):</strong> Scales the data[cite: 1075, 1097].</li>
+<li>[cite_start]<strong>$\gamma$ &amp; $\beta$:</strong> Learnable parameters that allow the model to scale and shift the normalized values as needed[cite: 1077, 1078].</li>
+</ul>
+<hr>
+<h2 id="5-cross-attention">5. Cross-Attention<a hidden class="anchor" aria-hidden="true" href="#5-cross-attention">#</a></h2>
+<p>[cite_start]While self-attention looks within the same sequence, <strong>Cross-Attention</strong> allows the Decoder to gather information from the Encoder[cite: 897].</p>
+<ul>
+<li>[cite_start]<strong>Queries (Q):</strong> Come from the Decoder (output sequence)[cite: 898].</li>
+<li>[cite_start]<strong>Keys (K) &amp; Values (V):</strong> Come from the Encoder (input sequence)[cite: 898].</li>
+</ul>
+<hr>
+<p><em>Summary of end-to-end data flow in Transformers based on Class-13 notes.</em></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/posts/blog2/">
+    <span class="title">« Prev</span>
+    <br>
+    <span>How I Built an AI Chatbot</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Krishna Raj</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
