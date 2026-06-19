@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Demystifying the LLM Training and Fine-Tuning Pipeline-part-3 | Krishna Raj</title>
+<meta name="keywords" content="">
+<meta name="description" content="End-to-End LLM Fine-Tuning: Non-Instruction, Instruction, and Preference Data with Hugging Face &amp; Unsloth
+
+Table of Contents
+
+What is Fine-Tuning and Why Do We Need It?
+The Three Types of Fine-Tuning
+The LLM Training Pipeline (Big Picture)
+Key Concepts You Must Know First
+Stage 1: Non-Instruction Fine-Tuning (Domain-Adaptive Continued Pretraining)
+Stage 2: Instruction Fine-Tuning (SFT)
+Stage 3: Preference Tuning (RLHF / DPO)
+LoRA and QLoRA — Training on a Budget
+Quantization Explained Simply
+Datasets: Built-in vs Custom
+Hugging Face Ecosystem Overview
+Complete Code Walkthrough
+Inference: Using Your Fine-Tuned Model
+Saving, Merging, and Deploying Adapters
+Upcoming Topics and Assignment
+
+
+1. What is Fine-Tuning and Why Do We Need It?
+A base LLM (like LLaMA, TinyLlama, GPT) is pretrained on massive general internet text. It knows language, grammar, and general facts — but it does not know your domain.">
+<meta name="author" content="Krishna Raj">
+<link rel="canonical" href="http://localhost:1313/posts/new-folder/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/new-folder/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Krishna Raj (Alt + H)">Krishna Raj</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/contact/" title="Contact">
+                    <span>Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">My Knowledge sharing </a></div>
+    <h1 class="post-title entry-hint-parent">
+      Demystifying the LLM Training and Fine-Tuning Pipeline-part-3
+    </h1>
+    <div class="post-meta"><span title='2026-06-07 00:00:00 +0000 UTC'>June 7, 2026</span>&nbsp;·&nbsp;<span>16 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="end-to-end-llm-fine-tuning-non-instruction-instruction-and-preference-data-with-hugging-face--unsloth">End-to-End LLM Fine-Tuning: Non-Instruction, Instruction, and Preference Data with Hugging Face &amp; Unsloth<a hidden class="anchor" aria-hidden="true" href="#end-to-end-llm-fine-tuning-non-instruction-instruction-and-preference-data-with-hugging-face--unsloth">#</a></h1>
+<hr>
+<h2 id="table-of-contents">Table of Contents<a hidden class="anchor" aria-hidden="true" href="#table-of-contents">#</a></h2>
+<ol>
+<li><a href="#1-what-is-fine-tuning-and-why-do-we-need-it">What is Fine-Tuning and Why Do We Need It?</a></li>
+<li><a href="#2-the-three-types-of-fine-tuning">The Three Types of Fine-Tuning</a></li>
+<li><a href="#3-the-llm-training-pipeline-big-picture">The LLM Training Pipeline (Big Picture)</a></li>
+<li><a href="#4-key-concepts-you-must-know-first">Key Concepts You Must Know First</a></li>
+<li><a href="#5-stage-1-non-instruction-fine-tuning">Stage 1: Non-Instruction Fine-Tuning (Domain-Adaptive Continued Pretraining)</a></li>
+<li><a href="#6-stage-2-instruction-fine-tuning">Stage 2: Instruction Fine-Tuning (SFT)</a></li>
+<li><a href="#7-stage-3-preference-tuning">Stage 3: Preference Tuning (RLHF / DPO)</a></li>
+<li><a href="#8-lora-and-qlora--training-on-a-budget">LoRA and QLoRA — Training on a Budget</a></li>
+<li><a href="#9-quantization-explained-simply">Quantization Explained Simply</a></li>
+<li><a href="#10-datasets-built-in-vs-custom">Datasets: Built-in vs Custom</a></li>
+<li><a href="#11-hugging-face-ecosystem-overview">Hugging Face Ecosystem Overview</a></li>
+<li><a href="#12-complete-code-walkthrough">Complete Code Walkthrough</a></li>
+<li><a href="#13-inference-using-your-fine-tuned-model">Inference: Using Your Fine-Tuned Model</a></li>
+<li><a href="#14-saving-merging-and-deploying-adapters">Saving, Merging, and Deploying Adapters</a></li>
+<li><a href="#15-upcoming-topics-and-assignment">Upcoming Topics and Assignment</a></li>
+</ol>
+<hr>
+<h2 id="1-what-is-fine-tuning-and-why-do-we-need-it">1. What is Fine-Tuning and Why Do We Need It?<a hidden class="anchor" aria-hidden="true" href="#1-what-is-fine-tuning-and-why-do-we-need-it">#</a></h2>
+<p>A base LLM (like LLaMA, TinyLlama, GPT) is pretrained on massive general internet text. It knows language, grammar, and general facts — but it does <strong>not</strong> know your domain.</p>
+<p><strong>Real-world use case from class:</strong></p>
+<blockquote>
+<p>&ldquo;pharma → pdf → retrain or finetune my own model&rdquo;</p>
+</blockquote>
+<p>If you work in pharma, healthcare, legal, or finance, you need the model to:</p>
+<ul>
+<li>Understand domain-specific terminology (e.g., AMPK, gluconeogenesis, Metformin)</li>
+<li>Answer domain-specific questions correctly</li>
+<li>Behave in a way your users prefer</li>
+</ul>
+<p>That&rsquo;s where fine-tuning comes in.</p>
+<h3 id="previous-topics-covered-prerequisites">Previous Topics Covered (Prerequisites)<a hidden class="anchor" aria-hidden="true" href="#previous-topics-covered-prerequisites">#</a></h3>
+<ul>
+<li>Basics and Fundamentals of Fine-Tuning</li>
+<li>Hugging Face in detail (datasets, models, tokenizers)</li>
+<li>Transformer internals: tokenization → token IDs → word embeddings → positional encoding → self-attention → FFNN</li>
+</ul>
+<hr>
+<h2 id="2-the-three-types-of-fine-tuning">2. The Three Types of Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#2-the-three-types-of-fine-tuning">#</a></h2>
+<pre tabindex="0"><code>Pretraining (Base model + General text)
+        ↓
+1. Non-Instruction FT  ──→  Domain knowledge (raw text: PDF, DOCX, PPT, TXT)
+        ↓
+2. Instruction FT      ──→  Teaches input↔output format (Q&amp;A, summaries)
+        ↓
+3. Preference Tuning   ──→  Human preference: chosen vs. rejected responses
+</code></pre><h3 id="type-1-non-instruction-fine-tuning">Type 1: Non-Instruction Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#type-1-non-instruction-fine-tuning">#</a></h3>
+<ul>
+<li><strong>Data format:</strong> Raw text (PDF, DOCX, PPT, plain text)</li>
+<li><strong>What it learns:</strong> Domain language, terminology, writing style</li>
+<li><strong>Goal:</strong> Make the model fluent in your domain&rsquo;s language</li>
+<li><strong>Also called:</strong> Domain-Adaptive Continued Pretraining, Custom Pretraining</li>
+<li><strong>Example:</strong> Feed all pharma research papers → model learns pharma language</li>
+</ul>
+<h3 id="type-2-instruction-fine-tuning-sft--supervised-fine-tuning">Type 2: Instruction Fine-Tuning (SFT — Supervised Fine-Tuning)<a hidden class="anchor" aria-hidden="true" href="#type-2-instruction-fine-tuning-sft--supervised-fine-tuning">#</a></h3>
+<ul>
+<li><strong>Data format:</strong> Structured <code>instruction → input → output</code> pairs (JSONL/CSV)</li>
+<li><strong>What it learns:</strong> How to respond to user questions/tasks</li>
+<li><strong>Goal:</strong> Make the model follow instructions and answer correctly</li>
+<li><strong>Example formats:</strong> Alpaca format, ChatGPT format (user/assistant messages)</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;instruction&#34;</span>: <span style="color:#e6db74">&#34;Explain the mechanism of action of Metformin.&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;input&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;output&#34;</span>: <span style="color:#e6db74">&#34;Metformin primarily activates AMPK, reduces hepatic gluconeogenesis, and improves glucose uptake.&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="type-3-preference-tuning-rlhf--dpo">Type 3: Preference Tuning (RLHF / DPO)<a hidden class="anchor" aria-hidden="true" href="#type-3-preference-tuning-rlhf--dpo">#</a></h3>
+<ul>
+<li><strong>Data format:</strong> <code>chosen</code> response vs. <code>rejected</code> response pairs</li>
+<li><strong>What it learns:</strong> Which type of response humans prefer</li>
+<li><strong>Goal:</strong> Make the model align with human values and preferences</li>
+<li><strong>Methods:</strong> RLHF (Reinforcement Learning from Human Feedback), DPO (Direct Preference Optimization)</li>
+</ul>
+<hr>
+<h2 id="3-the-llm-training-pipeline-big-picture">3. The LLM Training Pipeline (Big Picture)<a hidden class="anchor" aria-hidden="true" href="#3-the-llm-training-pipeline-big-picture">#</a></h2>
+<p>From class notes — the full 10-step Non-Instruction FT pipeline:</p>
+<pre tabindex="0"><code>Step 1:  RAW Data (from Pharma PDFs, SharePoint, Google Drive, S3, etc.)
+          ↓
+Step 2:  Read the Data (Data Parsing — e.g., PyMuPDF for PDFs)
+          ↓
+Step 3:  Cleaning of the Data (remove noise, fix hyphenation, normalize whitespace)
+          ↓
+Step 4:  Final Data (clean paragraphs)
+          ↓
+Step 5:  HF Compatible Format (Hugging Face Dataset object)
+          ↓
+Step 6:  Preprocessing — Tokenization (text → token IDs)
+          ↓
+Step 7:  Load the Model (optionally: Quantize model, add LoRA Adapter)
+          ↓
+Step 8:  Fine-Tune the Model using PEFT (not full model — just a subset of parameters)
+          ↓
+Step 9:  Save / Push to Hugging Face Hub
+          ↓
+Step 10: Inference → Text Prediction with trained model
+</code></pre><h3 id="where-raw-data-comes-from-real-world-sources">Where raw data comes from (real-world sources)<a hidden class="anchor" aria-hidden="true" href="#where-raw-data-comes-from-real-world-sources">#</a></h3>
+<ul>
+<li>SharePoint, Confluence, Google Drive</li>
+<li>AWS S3, Azure Blob Storage</li>
+<li>Internal document portals</li>
+<li>Download as: PDF / DOCX / HTML / TXT / Markdown</li>
+</ul>
+<hr>
+<h2 id="4-key-concepts-you-must-know-first">4. Key Concepts You Must Know First<a hidden class="anchor" aria-hidden="true" href="#4-key-concepts-you-must-know-first">#</a></h2>
+<h3 id="41-tokenization">4.1 Tokenization<a hidden class="anchor" aria-hidden="true" href="#41-tokenization">#</a></h3>
+<p>Tokenization converts text into numbers the model can process.</p>
+<pre tabindex="0"><code>&#34;I love AI&#34;
+    ↓ tokenizer (BPE / WordPiece)
+[&#34;I&#34;, &#34;love&#34;, &#34;AI&#34;]
+    ↓
+[40, 1842, 9552]  ← token IDs
+</code></pre><p><strong>Two main tokenization algorithms:</strong></p>
+<ul>
+<li><strong>BPE (Byte Pair Encoding)</strong> — used by GPT, LLaMA</li>
+<li><strong>WordPiece</strong> — used by BERT</li>
+</ul>
+<p><strong>How a Transformer processes input:</strong></p>
+<pre tabindex="0"><code>Token → Token IDs → Word Embedding → Positional Encoding → Self-Attention → FFNN → Output
+</code></pre><h3 id="42-padding-and-truncation">4.2 Padding and Truncation<a hidden class="anchor" aria-hidden="true" href="#42-padding-and-truncation">#</a></h3>
+<p>Training requires all sequences in a batch to be the same length.</p>
+<pre tabindex="0"><code>Sentence 1: &#34;My name is sunny&#34;  →  4 tokens
+Sentence 2: &#34;My friend name is Yash and Rahul&#34;  →  7 tokens
+Sentence 3: &#34;I am DS &amp; AI eng and my friend is dev&#34;  →  11 tokens
+</code></pre><p><strong>Solution: Padding to MAX_LENGTH</strong></p>
+<pre tabindex="0"><code>&#34;My name is sunny&#34; + &lt;S&gt; &lt;S&gt; &lt;S&gt; &lt;S&gt; .... &lt;S&gt;  →  padded to max length
+</code></pre><p><strong>Smart padding approach:</strong></p>
+<ul>
+<li>If your 5 sentences have lengths: 413, 512, 1000, 300, 650</li>
+<li>Padding all to 1000 wastes GPU memory</li>
+<li>Instead: pad to <code>max_token = 512</code>, and <strong>truncate</strong> anything longer</li>
+<li>This creates fixed 512-token <strong>blocks</strong> — efficient for GPU training</li>
+</ul>
+<h3 id="43-next-token-prediction-causal-language-modeling">4.3 Next Token Prediction (Causal Language Modeling)<a hidden class="anchor" aria-hidden="true" href="#43-next-token-prediction-causal-language-modeling">#</a></h3>
+<p>The core task of non-instruction fine-tuning — given a sequence, predict what comes next:</p>
+<pre tabindex="0"><code>Input:  &#34;You need to change your setting&#34;  (shift = 1)
+Output: &#34;need to change your setting to&#34;
+</code></pre><p>Each position in the input predicts the next token — this is how the model learns domain language patterns.</p>
+<h3 id="44-bert-vs-gptllama-architecture">4.4 BERT vs GPT/LLaMA Architecture<a hidden class="anchor" aria-hidden="true" href="#44-bert-vs-gptllama-architecture">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Feature</th>
+          <th>BERT</th>
+          <th>GPT / LLaMA</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Type</td>
+          <td>Encoder</td>
+          <td>Decoder (Causal)</td>
+      </tr>
+      <tr>
+          <td>Task</td>
+          <td>Masked Language Modeling</td>
+          <td>Next Token Prediction</td>
+      </tr>
+      <tr>
+          <td>Hidden size (base)</td>
+          <td>768</td>
+          <td>Varies</td>
+      </tr>
+      <tr>
+          <td>Used for</td>
+          <td>Classification, NER</td>
+          <td>Generation, Chat</td>
+      </tr>
+      <tr>
+          <td>Fine-tuning type</td>
+          <td>Not used for causal FT</td>
+          <td>Used for all 3 FT types</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="5-stage-1-non-instruction-fine-tuning">5. Stage 1: Non-Instruction Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#5-stage-1-non-instruction-fine-tuning">#</a></h2>
+<h3 id="goal">Goal<a hidden class="anchor" aria-hidden="true" href="#goal">#</a></h3>
+<p>Train the model on raw pharma PDFs so it learns pharma domain language, terminology, and writing patterns — <strong>without</strong> teaching it how to answer questions.</p>
+<h3 id="full-pipeline">Full Pipeline<a hidden class="anchor" aria-hidden="true" href="#full-pipeline">#</a></h3>
+<pre tabindex="0"><code>Pharma PDF
+    ↓
+PDF text extraction (PyMuPDF / fitz)
+    ↓
+Text cleaning and normalization
+    ↓
+Split into paragraphs
+    ↓
+Hugging Face Dataset conversion
+    ↓
+Tokenization
+    ↓
+Text packing into fixed 512-token blocks
+    ↓
+LoRA/QLoRA fine-tuning (causal LM)
+    ↓
+Validate with loss curve
+    ↓
+Save adapter → Push to Hub
+    ↓
+Inference (text continuation)
+</code></pre><h3 id="step-by-step-code">Step-by-Step Code<a hidden class="anchor" aria-hidden="true" href="#step-by-step-code">#</a></h3>
+<h4 id="install-dependencies">Install Dependencies<a hidden class="anchor" aria-hidden="true" href="#install-dependencies">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">!</span>pip install <span style="color:#f92672">-</span>q <span style="color:#f92672">-</span>U pymupdf datasets transformers accelerate peft bitsandbytes torchao
+</span></span></code></pre></div><h4 id="configuration-all-parameters-in-one-place">Configuration (All Parameters in One Place)<a hidden class="anchor" aria-hidden="true" href="#configuration-all-parameters-in-one-place">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> dataclasses <span style="color:#f92672">import</span> dataclass, asdict
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">@dataclass</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Config</span>:
+</span></span><span style="display:flex;"><span>    pdf_path: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/Metformin-Lipid-Therapy-Knowledge.pdf&#34;</span>
+</span></span><span style="display:flex;"><span>    model_name: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T&#34;</span>
+</span></span><span style="display:flex;"><span>    output_dir: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/pharma_tinyllama_lora_output&#34;</span>
+</span></span><span style="display:flex;"><span>    adapter_dir: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/pharma_tinyllama_lora_adapter&#34;</span>
+</span></span><span style="display:flex;"><span>    processed_data_dir: str <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/content/pharma_processed_data&#34;</span>
+</span></span><span style="display:flex;"><span>    min_chars_per_paragraph: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>    block_size: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">512</span>           <span style="color:#75715e"># tokens per training block</span>
+</span></span><span style="display:flex;"><span>    test_size: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.15</span>
+</span></span><span style="display:flex;"><span>    seed: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">42</span>
+</span></span><span style="display:flex;"><span>    lora_r: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">16</span>                <span style="color:#75715e"># LoRA rank</span>
+</span></span><span style="display:flex;"><span>    lora_alpha: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">32</span>            <span style="color:#75715e"># LoRA scaling</span>
+</span></span><span style="display:flex;"><span>    lora_dropout: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.05</span>
+</span></span><span style="display:flex;"><span>    num_train_epochs: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">3.0</span>
+</span></span><span style="display:flex;"><span>    per_device_train_batch_size: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    gradient_accumulation_steps: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>    learning_rate: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">2e-4</span>
+</span></span><span style="display:flex;"><span>    warmup_ratio: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.03</span>
+</span></span><span style="display:flex;"><span>    weight_decay: float <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.01</span>
+</span></span><span style="display:flex;"><span>    eval_steps: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>    save_steps: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">25</span>
+</span></span><span style="display:flex;"><span>    save_total_limit: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>    max_steps: int <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><blockquote>
+<p><strong>Why a Config dataclass?</strong> Keeps all hyperparameters in one place. Easy to debug, reproduce, and productionize. Use <code>dataclass</code>, <code>enum</code>, <code>pydantic</code>, or <code>TypedDict</code> — pick what fits your project.</p>
+</blockquote>
+<h4 id="extract-text-from-pdf">Extract Text from PDF<a hidden class="anchor" aria-hidden="true" href="#extract-text-from-pdf">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> fitz  <span style="color:#75715e"># PyMuPDF</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">extract_pdf_pages</span>(pdf_path):
+</span></span><span style="display:flex;"><span>    pages <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> fitz<span style="color:#f92672">.</span>open(pdf_path) <span style="color:#66d9ef">as</span> doc:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> page_index, page <span style="color:#f92672">in</span> enumerate(doc, start<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>):
+</span></span><span style="display:flex;"><span>            text <span style="color:#f92672">=</span> page<span style="color:#f92672">.</span>get_text(<span style="color:#e6db74">&#34;text&#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">if</span> text:
+</span></span><span style="display:flex;"><span>                pages<span style="color:#f92672">.</span>append({
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;page&#34;</span>: page_index,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;text&#34;</span>: text,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;char_count&#34;</span>: len(text),
+</span></span><span style="display:flex;"><span>                })
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> pages
+</span></span></code></pre></div><h4 id="clean-the-extracted-text">Clean the Extracted Text<a hidden class="anchor" aria-hidden="true" href="#clean-the-extracted-text">#</a></h4>
+<p>Raw PDFs have many issues — here&rsquo;s what we fix and why:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Cleaning Step</th>
+          <th>What It Does</th>
+          <th>Why It Matters</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Unicode normalization (<code>NFKC</code>)</td>
+          <td>Converts unusual chars (<code>ＡＭＰＫ</code> → <code>AMPK</code>)</td>
+          <td>Prevents tokenizer confusion</td>
+      </tr>
+      <tr>
+          <td>Remove zero-width chars (<code>\u200b</code>)</td>
+          <td>Removes invisible spaces</td>
+          <td>Prevents bad tokens</td>
+      </tr>
+      <tr>
+          <td>Remove BOM (<code>\ufeff</code>)</td>
+          <td>Removes hidden byte order marks</td>
+          <td>Keeps text clean</td>
+      </tr>
+      <tr>
+          <td>Fix hyphenated line breaks</td>
+          <td><code>gluconeogene-\nsis</code> → <code>gluconeogenesis</code></td>
+          <td>Prevents broken medical terms</td>
+      </tr>
+      <tr>
+          <td>Normalize spaces</td>
+          <td>Multiple spaces → single space</td>
+          <td>Consistent tokenization</td>
+      </tr>
+      <tr>
+          <td>Remove standalone page numbers</td>
+          <td>Removes lines like <code>1</code>, <code>23</code></td>
+          <td>Avoids model learning page numbers</td>
+      </tr>
+      <tr>
+          <td>Split into paragraphs</td>
+          <td>Split on blank lines</td>
+          <td>Preserves document structure</td>
+      </tr>
+  </tbody>
+</table>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> re
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> unicodedata
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">clean_pdf_text</span>(text: str) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> unicodedata<span style="color:#f92672">.</span>normalize(<span style="color:#e6db74">&#34;NFKC&#34;</span>, text)
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> text<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\u200b</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">.</span>replace(<span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\ufeff</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;(\w)-\n(\w)&#34;</span>, <span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\1\2&#34;</span>, text)
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;[ \t]+&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, text)
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\n{3,}&#34;</span>, <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>, text)
+</span></span><span style="display:flex;"><span>    text <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;(?m)^\s*\d+\s*$&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>, text)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    paragraphs <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> paragraph <span style="color:#f92672">in</span> re<span style="color:#f92672">.</span>split(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\n\s*\n&#34;</span>, text):
+</span></span><span style="display:flex;"><span>        paragraph <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\n+&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, paragraph)
+</span></span><span style="display:flex;"><span>        paragraph <span style="color:#f92672">=</span> re<span style="color:#f92672">.</span>sub(<span style="color:#e6db74">r</span><span style="color:#e6db74">&#34;\s+&#34;</span>, <span style="color:#e6db74">&#34; &#34;</span>, paragraph)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> paragraph:
+</span></span><span style="display:flex;"><span>            paragraphs<span style="color:#f92672">.</span>append(paragraph)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span><span style="color:#f92672">.</span>join(paragraphs)
+</span></span></code></pre></div><h4 id="create-hugging-face-dataset">Create Hugging Face Dataset<a hidden class="anchor" aria-hidden="true" href="#create-hugging-face-dataset">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> datasets <span style="color:#f92672">import</span> Dataset, DatasetDict
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Convert paragraph records to HF Dataset</span>
+</span></span><span style="display:flex;"><span>text_dataset <span style="color:#f92672">=</span> Dataset<span style="color:#f92672">.</span>from_list(paragraph_records)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Train/validation split</span>
+</span></span><span style="display:flex;"><span>split <span style="color:#f92672">=</span> text_dataset<span style="color:#f92672">.</span>train_test_split(test_size<span style="color:#f92672">=</span><span style="color:#ae81ff">0.15</span>, seed<span style="color:#f92672">=</span><span style="color:#ae81ff">42</span>)
+</span></span><span style="display:flex;"><span>dataset <span style="color:#f92672">=</span> DatasetDict({<span style="color:#e6db74">&#34;train&#34;</span>: split[<span style="color:#e6db74">&#34;train&#34;</span>], <span style="color:#e6db74">&#34;validation&#34;</span>: split[<span style="color:#e6db74">&#34;test&#34;</span>]})
+</span></span></code></pre></div><h4 id="tokenize">Tokenize<a hidden class="anchor" aria-hidden="true" href="#tokenize">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> transformers <span style="color:#f92672">import</span> AutoTokenizer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tokenizer <span style="color:#f92672">=</span> AutoTokenizer<span style="color:#f92672">.</span>from_pretrained(config<span style="color:#f92672">.</span>model_name, use_fast<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> tokenizer<span style="color:#f92672">.</span>pad_token <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    tokenizer<span style="color:#f92672">.</span>pad_token <span style="color:#f92672">=</span> tokenizer<span style="color:#f92672">.</span>eos_token  <span style="color:#75715e"># Common for LLaMA-style models</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tokenize_function</span>(examples):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tokenizer(examples[<span style="color:#e6db74">&#34;text&#34;</span>])  <span style="color:#75715e"># No padding here — handled by text packing</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>tokenized_datasets <span style="color:#f92672">=</span> dataset<span style="color:#f92672">.</span>map(tokenize_function, remove_columns<span style="color:#f92672">=</span>dataset[<span style="color:#e6db74">&#34;train&#34;</span>]<span style="color:#f92672">.</span>column_names)
+</span></span></code></pre></div><h4 id="text-packing-vs-padding-approach">Text Packing (vs Padding Approach)<a hidden class="anchor" aria-hidden="true" href="#text-packing-vs-padding-approach">#</a></h4>
+<p><strong>Approach 1 — Padding (Simple but inefficient):</strong></p>
+<pre tabindex="0"><code>Paragraph (100 tokens) + 412 padding tokens = 512 tokens  ← GPU waste!
+</code></pre><p><strong>Approach 2 — Text Packing (Efficient, Industry Standard):</strong></p>
+<pre tabindex="0"><code>Paragraph 1 (100 tokens) + Paragraph 2 (150 tokens) + Paragraph 3 (262 tokens) = 512 real tokens
+</code></pre><p>No padding waste. All 512 tokens are real text. Better GPU utilization.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">create_training_blocks</span>(tokenized_examples):
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Join all tokens into one long stream</span>
+</span></span><span style="display:flex;"><span>    all_input_ids <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    all_attention_masks <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> ids <span style="color:#f92672">in</span> tokenized_examples[<span style="color:#e6db74">&#34;input_ids&#34;</span>]:
+</span></span><span style="display:flex;"><span>        all_input_ids<span style="color:#f92672">.</span>extend(ids)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> mask <span style="color:#f92672">in</span> tokenized_examples[<span style="color:#e6db74">&#34;attention_mask&#34;</span>]:
+</span></span><span style="display:flex;"><span>        all_attention_masks<span style="color:#f92672">.</span>extend(mask)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Cut into fixed-size blocks</span>
+</span></span><span style="display:flex;"><span>    total <span style="color:#f92672">=</span> len(all_input_ids)
+</span></span><span style="display:flex;"><span>    usable <span style="color:#f92672">=</span> (total <span style="color:#f92672">//</span> config<span style="color:#f92672">.</span>block_size) <span style="color:#f92672">*</span> config<span style="color:#f92672">.</span>block_size
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> usable <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> {<span style="color:#e6db74">&#34;input_ids&#34;</span>: [], <span style="color:#e6db74">&#34;attention_mask&#34;</span>: [], <span style="color:#e6db74">&#34;labels&#34;</span>: []}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    all_input_ids <span style="color:#f92672">=</span> all_input_ids[:usable]
+</span></span><span style="display:flex;"><span>    all_attention_masks <span style="color:#f92672">=</span> all_attention_masks[:usable]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    blocks_ids, blocks_mask <span style="color:#f92672">=</span> [], []
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> start <span style="color:#f92672">in</span> range(<span style="color:#ae81ff">0</span>, usable, config<span style="color:#f92672">.</span>block_size):
+</span></span><span style="display:flex;"><span>        end <span style="color:#f92672">=</span> start <span style="color:#f92672">+</span> config<span style="color:#f92672">.</span>block_size
+</span></span><span style="display:flex;"><span>        blocks_ids<span style="color:#f92672">.</span>append(all_input_ids[start:end])
+</span></span><span style="display:flex;"><span>        blocks_mask<span style="color:#f92672">.</span>append(all_attention_masks[start:end])
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;input_ids&#34;</span>: blocks_ids,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;attention_mask&#34;</span>: blocks_mask,
+</span></span><span style="display:flex;"><span>        <span style="color:#e6db74">&#34;labels&#34;</span>: blocks_ids<span style="color:#f92672">.</span>copy(),  <span style="color:#75715e"># Labels = input_ids for causal LM</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>final_dataset <span style="color:#f92672">=</span> tokenized_datasets<span style="color:#f92672">.</span>map(create_training_blocks, batched<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><blockquote>
+<p><strong>Key insight:</strong> For causal LM, <code>labels = input_ids</code>. The model predicts each token from the previous ones — that&rsquo;s how it learns.</p>
+</blockquote>
+<h4 id="load-model-with-qlora-4-bit-quantization">Load Model with QLoRA (4-bit Quantization)<a hidden class="anchor" aria-hidden="true" href="#load-model-with-qlora-4-bit-quantization">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> torch
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> transformers <span style="color:#f92672">import</span> AutoModelForCausalLM, BitsAndBytesConfig
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> peft <span style="color:#f92672">import</span> prepare_model_for_kbit_training
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>use_cuda <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> use_cuda:
+</span></span><span style="display:flex;"><span>    quantization_config <span style="color:#f92672">=</span> BitsAndBytesConfig(
+</span></span><span style="display:flex;"><span>        load_in_4bit<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>        bnb_4bit_quant_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;nf4&#34;</span>,
+</span></span><span style="display:flex;"><span>        bnb_4bit_compute_dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float16,
+</span></span><span style="display:flex;"><span>        bnb_4bit_use_double_quant<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    base_model <span style="color:#f92672">=</span> AutoModelForCausalLM<span style="color:#f92672">.</span>from_pretrained(
+</span></span><span style="display:flex;"><span>        config<span style="color:#f92672">.</span>model_name,
+</span></span><span style="display:flex;"><span>        quantization_config<span style="color:#f92672">=</span>quantization_config,
+</span></span><span style="display:flex;"><span>        device_map<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;auto&#34;</span>,
+</span></span><span style="display:flex;"><span>        trust_remote_code<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    base_model <span style="color:#f92672">=</span> prepare_model_for_kbit_training(base_model)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>    base_model <span style="color:#f92672">=</span> AutoModelForCausalLM<span style="color:#f92672">.</span>from_pretrained(
+</span></span><span style="display:flex;"><span>        config<span style="color:#f92672">.</span>model_name,
+</span></span><span style="display:flex;"><span>        torch_dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float32,
+</span></span><span style="display:flex;"><span>        trust_remote_code<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>base_model<span style="color:#f92672">.</span>config<span style="color:#f92672">.</span>use_cache <span style="color:#f92672">=</span> <span style="color:#66d9ef">False</span>
+</span></span></code></pre></div><h4 id="apply-lora-adapters">Apply LoRA Adapters<a hidden class="anchor" aria-hidden="true" href="#apply-lora-adapters">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> peft <span style="color:#f92672">import</span> LoraConfig, get_peft_model, TaskType
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lora_config <span style="color:#f92672">=</span> LoraConfig(
+</span></span><span style="display:flex;"><span>    task_type<span style="color:#f92672">=</span>TaskType<span style="color:#f92672">.</span>CAUSAL_LM,
+</span></span><span style="display:flex;"><span>    r<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>lora_r,             <span style="color:#75715e"># Rank: controls adapter size</span>
+</span></span><span style="display:flex;"><span>    lora_alpha<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>lora_alpha, <span style="color:#75715e"># Scaling factor</span>
+</span></span><span style="display:flex;"><span>    lora_dropout<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>lora_dropout,
+</span></span><span style="display:flex;"><span>    bias<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>,
+</span></span><span style="display:flex;"><span>    target_modules<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;q_proj&#34;</span>, <span style="color:#e6db74">&#34;k_proj&#34;</span>, <span style="color:#e6db74">&#34;v_proj&#34;</span>, <span style="color:#e6db74">&#34;o_proj&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;gate_proj&#34;</span>, <span style="color:#e6db74">&#34;up_proj&#34;</span>, <span style="color:#e6db74">&#34;down_proj&#34;</span>],
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model <span style="color:#f92672">=</span> get_peft_model(base_model, lora_config)
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>print_trainable_parameters()
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Output: trainable params: ~4M || all params: ~1.1B || trainable%: ~0.37%</span>
+</span></span></code></pre></div><h4 id="data-collator-and-trainer">Data Collator and Trainer<a hidden class="anchor" aria-hidden="true" href="#data-collator-and-trainer">#</a></h4>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> transformers <span style="color:#f92672">import</span> DataCollatorForLanguageModeling, TrainingArguments, Trainer
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># mlm=False → we are doing causal LM, not masked LM (BERT-style)</span>
+</span></span><span style="display:flex;"><span>data_collator <span style="color:#f92672">=</span> DataCollatorForLanguageModeling(tokenizer<span style="color:#f92672">=</span>tokenizer, mlm<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>training_args <span style="color:#f92672">=</span> TrainingArguments(
+</span></span><span style="display:flex;"><span>    output_dir<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>output_dir,
+</span></span><span style="display:flex;"><span>    num_train_epochs<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>num_train_epochs,
+</span></span><span style="display:flex;"><span>    per_device_train_batch_size<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>per_device_train_batch_size,
+</span></span><span style="display:flex;"><span>    gradient_accumulation_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>gradient_accumulation_steps,
+</span></span><span style="display:flex;"><span>    learning_rate<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>learning_rate,
+</span></span><span style="display:flex;"><span>    weight_decay<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>weight_decay,
+</span></span><span style="display:flex;"><span>    logging_steps<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>,
+</span></span><span style="display:flex;"><span>    eval_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>eval_steps,
+</span></span><span style="display:flex;"><span>    save_steps<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>save_steps,
+</span></span><span style="display:flex;"><span>    save_total_limit<span style="color:#f92672">=</span>config<span style="color:#f92672">.</span>save_total_limit,
+</span></span><span style="display:flex;"><span>    fp16<span style="color:#f92672">=</span>use_cuda,
+</span></span><span style="display:flex;"><span>    report_to<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>,
+</span></span><span style="display:flex;"><span>    remove_unused_columns<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>trainer <span style="color:#f92672">=</span> Trainer(
+</span></span><span style="display:flex;"><span>    model<span style="color:#f92672">=</span>model,
+</span></span><span style="display:flex;"><span>    args<span style="color:#f92672">=</span>training_args,
+</span></span><span style="display:flex;"><span>    train_dataset<span style="color:#f92672">=</span>final_dataset[<span style="color:#e6db74">&#34;train&#34;</span>],
+</span></span><span style="display:flex;"><span>    eval_dataset<span style="color:#f92672">=</span>final_dataset[<span style="color:#e6db74">&#34;validation&#34;</span>],
+</span></span><span style="display:flex;"><span>    data_collator<span style="color:#f92672">=</span>data_collator,
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>trainer<span style="color:#f92672">.</span>train()
+</span></span></code></pre></div><blockquote>
+<p><strong>Why <code>DataCollatorForLanguageModeling</code>?</strong> After text packing, the collator batches multiple fixed-size blocks into tensors of shape <code>[batch_size, 512]</code>. This is the format the model expects.</p>
+</blockquote>
+<hr>
+<h2 id="6-stage-2-instruction-fine-tuning">6. Stage 2: Instruction Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#6-stage-2-instruction-fine-tuning">#</a></h2>
+<h3 id="goal-1">Goal<a hidden class="anchor" aria-hidden="true" href="#goal-1">#</a></h3>
+<p>After Stage 1, the model knows pharma language. Now teach it <strong>how to answer questions</strong> using structured instruction-response pairs.</p>
+<h3 id="alpaca-instruction-format">Alpaca Instruction Format<a hidden class="anchor" aria-hidden="true" href="#alpaca-instruction-format">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;instruction&#34;</span>: <span style="color:#e6db74">&#34;What are common side effects of Metformin?&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;input&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;output&#34;</span>: <span style="color:#e6db74">&#34;Common side effects include nausea, abdominal discomfort, metallic taste, and diarrhea.&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="how-to-get-instruction-data-real-world-methods">How to Get Instruction Data (Real-World Methods)<a hidden class="anchor" aria-hidden="true" href="#how-to-get-instruction-data-real-world-methods">#</a></h3>
+<p><strong>Method 1: Human-created Q&amp;A</strong>
+Domain experts manually write question-answer pairs. High quality but slow and expensive.</p>
+<p><strong>Method 2: Existing conversations</strong>
+Use real customer support tickets, chat transcripts, doctor-patient Q&amp;As, email threads.
+Clean and convert into instruction format.</p>
+<p><strong>Method 3: Synthetic data generation (LLM-assisted)</strong></p>
+<pre tabindex="0"><code>Raw pharma document
+    ↓
+Strong LLM generates Q&amp;A pairs automatically
+    ↓
+Human/domain expert reviews
+    ↓
+Clean instruction dataset
+    ↓
+Instruction fine-tuning
+</code></pre><blockquote>
+<p><strong>Important:</strong> In regulated domains (pharma, healthcare, legal), always have domain experts review synthetic data before training.</p>
+</blockquote>
+<h3 id="format-instruction-records-alpaca-style">Format Instruction Records (Alpaca Style)<a hidden class="anchor" aria-hidden="true" href="#format-instruction-records-alpaca-style">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">format_instruction_record</span>(record):
+</span></span><span style="display:flex;"><span>    instruction <span style="color:#f92672">=</span> record<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;instruction&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>    input_text <span style="color:#f92672">=</span> record<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;input&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>    output_text <span style="color:#f92672">=</span> record<span style="color:#f92672">.</span>get(<span style="color:#e6db74">&#34;output&#34;</span>, <span style="color:#e6db74">&#34;&#34;</span>)<span style="color:#f92672">.</span>strip()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> input_text:
+</span></span><span style="display:flex;"><span>        text <span style="color:#f92672">=</span> (
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Instruction:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>instruction<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Input:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>input_text<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Response:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>output_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>        text <span style="color:#f92672">=</span> (
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Instruction:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>instruction<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Response:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>output_text<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> {<span style="color:#e6db74">&#34;text&#34;</span>: text}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>instruction_dataset <span style="color:#f92672">=</span> instruction_dataset<span style="color:#f92672">.</span>map(format_instruction_record)
+</span></span></code></pre></div><h3 id="tokenization-for-instruction-data-with-label-masking">Tokenization for Instruction Data (with Label Masking)<a hidden class="anchor" aria-hidden="true" href="#tokenization-for-instruction-data-with-label-masking">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">tokenize_instruction_function</span>(examples):
+</span></span><span style="display:flex;"><span>    tokens <span style="color:#f92672">=</span> tokenizer(
+</span></span><span style="display:flex;"><span>        examples[<span style="color:#e6db74">&#34;text&#34;</span>],
+</span></span><span style="display:flex;"><span>        truncation<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>        padding<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;max_length&#34;</span>,
+</span></span><span style="display:flex;"><span>        max_length<span style="color:#f92672">=</span><span style="color:#ae81ff">512</span>,
+</span></span><span style="display:flex;"><span>    )
+</span></span><span style="display:flex;"><span>    tokens[<span style="color:#e6db74">&#34;labels&#34;</span>] <span style="color:#f92672">=</span> tokens[<span style="color:#e6db74">&#34;input_ids&#34;</span>]<span style="color:#f92672">.</span>copy()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># Mask padding positions with -100 so loss ignores them</span>
+</span></span><span style="display:flex;"><span>    tokens[<span style="color:#e6db74">&#34;labels&#34;</span>] <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>        [t <span style="color:#66d9ef">if</span> m <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">100</span> <span style="color:#66d9ef">for</span> t, m <span style="color:#f92672">in</span> zip(ids, mask)]
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> ids, mask <span style="color:#f92672">in</span> zip(tokens[<span style="color:#e6db74">&#34;input_ids&#34;</span>], tokens[<span style="color:#e6db74">&#34;attention_mask&#34;</span>])
+</span></span><span style="display:flex;"><span>    ]
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> tokens
+</span></span></code></pre></div><blockquote>
+<p><strong>Why -100?</strong> PyTorch&rsquo;s cross-entropy loss ignores positions labeled <code>-100</code>. This ensures the model only learns from real text, not from padding tokens.</p>
+</blockquote>
+<h3 id="two-approaches-for-stage-2">Two Approaches for Stage 2<a hidden class="anchor" aria-hidden="true" href="#two-approaches-for-stage-2">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Approach</th>
+          <th>Description</th>
+          <th>Best For</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Continue same LoRA adapter</td>
+          <td>Stage 1 adapter continues training on instruction data</td>
+          <td>Simpler, recommended for learning</td>
+      </tr>
+      <tr>
+          <td>Merge Stage 1 → Add new LoRA</td>
+          <td>Merge Stage 1, then apply fresh LoRA for Stage 2</td>
+          <td>Production, cleaner separation</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="7-stage-3-preference-tuning">7. Stage 3: Preference Tuning<a hidden class="anchor" aria-hidden="true" href="#7-stage-3-preference-tuning">#</a></h2>
+<h3 id="goal-2">Goal<a hidden class="anchor" aria-hidden="true" href="#goal-2">#</a></h3>
+<p>After instruction fine-tuning, the model can answer questions. Now teach it to respond the way humans <strong>prefer</strong> — safer, more helpful, more accurate.</p>
+<h3 id="data-format">Data Format<a hidden class="anchor" aria-hidden="true" href="#data-format">#</a></h3>
+<pre tabindex="0"><code>{
+  &#34;prompt&#34;: &#34;What is a normal blood glucose level?&#34;,
+  &#34;chosen&#34;: &#34;Fasting blood glucose below 100 mg/dL is normal.&#34;,   ← preferred
+  &#34;rejected&#34;: &#34;It depends. Maybe 120. Maybe 200. Hard to say.&#34;    ← not preferred
+}
+</code></pre><h3 id="methods">Methods<a hidden class="anchor" aria-hidden="true" href="#methods">#</a></h3>
+<ul>
+<li><strong>RLHF</strong> (Reinforcement Learning from Human Feedback) — used by ChatGPT, Claude</li>
+<li><strong>DPO</strong> (Direct Preference Optimization) — simpler, no separate reward model needed</li>
+</ul>
+<hr>
+<h2 id="8-lora-and-qlora--training-on-a-budget">8. LoRA and QLoRA — Training on a Budget<a hidden class="anchor" aria-hidden="true" href="#8-lora-and-qlora--training-on-a-budget">#</a></h2>
+<h3 id="why-not-full-fine-tuning">Why Not Full Fine-Tuning?<a hidden class="anchor" aria-hidden="true" href="#why-not-full-fine-tuning">#</a></h3>
+<pre tabindex="0"><code>LLaMA base model = 1 Billion parameters
+Full fine-tuning = update all 1B parameters → needs massive GPU RAM
+</code></pre><h3 id="what-lora-does">What LoRA Does<a hidden class="anchor" aria-hidden="true" href="#what-lora-does">#</a></h3>
+<p>Instead of updating the full weight matrix, LoRA <strong>decomposes</strong> it into two smaller matrices using <strong>rank decomposition</strong>:</p>
+<pre tabindex="0"><code>Original matrix (large) → Two small matrices A and B (trainable)
+   W (frozen)           →       W + A × B  (only A, B are trained)
+</code></pre><p>The <strong>rank (r)</strong> controls the size of these small matrices. Lower rank = fewer parameters = less memory.</p>
+<pre tabindex="0"><code>LLaMA 1B parameters
+    ↓
+LoRA adapter → only ~4M parameters (0.37% of the model!)
+    ↓
+90% less GPU memory
+</code></pre><h3 id="qlora--quantization--lora">QLoRA = Quantization + LoRA<a hidden class="anchor" aria-hidden="true" href="#qlora--quantization--lora">#</a></h3>
+<p>Load the base model in <strong>4-bit precision</strong> (instead of 32-bit float), then add LoRA adapters on top. This allows fine-tuning billion-parameter models on a single consumer GPU.</p>
+<pre tabindex="0"><code>Weight storage:
+  Float32 → 4 bytes per weight → 4 GB RAM for 1B params
+  4-bit   → 0.5 bytes per weight → 0.5 GB RAM for 1B params
+</code></pre><h3 id="lora-hyperparameters-explained">LoRA Hyperparameters Explained<a hidden class="anchor" aria-hidden="true" href="#lora-hyperparameters-explained">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Parameter</th>
+          <th>What It Does</th>
+          <th>Typical Value</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><code>r</code> (rank)</td>
+          <td>Size of adapter matrices. Higher = more capacity but more memory</td>
+          <td>8–64</td>
+      </tr>
+      <tr>
+          <td><code>lora_alpha</code></td>
+          <td>Scaling factor. Usually set to 2× the rank</td>
+          <td><code>2 × r</code></td>
+      </tr>
+      <tr>
+          <td><code>lora_dropout</code></td>
+          <td>Dropout inside LoRA to reduce overfitting</td>
+          <td>0.05</td>
+      </tr>
+      <tr>
+          <td><code>target_modules</code></td>
+          <td>Which layers to attach LoRA to (attention layers)</td>
+          <td>q_proj, v_proj, etc.</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="deploying-lora-two-options">Deploying LoRA: Two Options<a hidden class="anchor" aria-hidden="true" href="#deploying-lora-two-options">#</a></h3>
+<p><strong>Option 1 — Load adapter separately (lightweight):</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> peft <span style="color:#f92672">import</span> PeftModel
+</span></span><span style="display:flex;"><span>inference_model <span style="color:#f92672">=</span> PeftModel<span style="color:#f92672">.</span>from_pretrained(base_model, config<span style="color:#f92672">.</span>adapter_dir)
+</span></span></code></pre></div><p>Base model stays frozen; adapter loaded on top. Upload only the small adapter (~30MB).</p>
+<p><strong>Option 2 — Merge permanently (standalone model):</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>model_with_adapter <span style="color:#f92672">=</span> PeftModel<span style="color:#f92672">.</span>from_pretrained(base_model, config<span style="color:#f92672">.</span>adapter_dir)
+</span></span><span style="display:flex;"><span>merged_model <span style="color:#f92672">=</span> model_with_adapter<span style="color:#f92672">.</span>merge_and_unload()
+</span></span><span style="display:flex;"><span>merged_model<span style="color:#f92672">.</span>save_pretrained(merged_model_dir)
+</span></span></code></pre></div><p>Results in a single model file. Larger to store but easier to deploy.</p>
+<hr>
+<h2 id="9-quantization-explained-simply">9. Quantization Explained Simply<a hidden class="anchor" aria-hidden="true" href="#9-quantization-explained-simply">#</a></h2>
+<p>Quantization reduces the number of bits used to store each model weight.</p>
+<pre tabindex="0"><code>Data types and their bit usage:
+
+Float  →  32 bits  (full precision, most accurate)
+int8   →   8 bits  (4× smaller)
+fp16   →  16 bits  (2× smaller, commonly used for training)
+4-bit  →   4 bits  (8× smaller, used in QLoRA)
+</code></pre><p><strong>Practical impact:</strong></p>
+<pre tabindex="0"><code>1B parameter model:
+  Float32: ~4 GB RAM
+  fp16:    ~2 GB RAM
+  4-bit:   ~0.5 GB RAM  ← fits on a free Colab GPU!
+</code></pre><p><strong>Training loop with quantization:</strong></p>
+<pre tabindex="0"><code>Forward Pass (FP) → compute loss
+         ↓
+Backward Pass (BP) → compute gradients
+         ↓
+Optimizer → update only LoRA weights (A, B matrices)
+</code></pre><hr>
+<h2 id="10-datasets-built-in-vs-custom">10. Datasets: Built-in vs Custom<a hidden class="anchor" aria-hidden="true" href="#10-datasets-built-in-vs-custom">#</a></h2>
+<h3 id="hugging-face-datasets-library">Hugging Face <code>datasets</code> Library<a hidden class="anchor" aria-hidden="true" href="#hugging-face-datasets-library">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> datasets <span style="color:#f92672">import</span> load_dataset
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Built-in dataset (uploaded by companies, universities, open-source community)</span>
+</span></span><span style="display:flex;"><span>dataset <span style="color:#f92672">=</span> load_dataset(<span style="color:#e6db74">&#34;alpaca&#34;</span>, split<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;train&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Custom dataset from local files</span>
+</span></span><span style="display:flex;"><span>dataset <span style="color:#f92672">=</span> load_dataset(<span style="color:#e6db74">&#34;json&#34;</span>, data_files<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;my_data.jsonl&#34;</span>, split<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;train&#34;</span>)
+</span></span></code></pre></div><h3 id="supported-data-formats">Supported Data Formats<a hidden class="anchor" aria-hidden="true" href="#supported-data-formats">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Format</th>
+          <th>Best For</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>CSV, XLSX, TSV, JSON</td>
+          <td>Small-to-medium datasets</td>
+      </tr>
+      <tr>
+          <td>JSONL</td>
+          <td>Instruction/preference data</td>
+      </tr>
+      <tr>
+          <td>Parquet, ORC, Arrow</td>
+          <td>Large-scale / big-data training</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="creating-a-custom-hf-compatible-dataset">Creating a Custom HF-Compatible Dataset<a hidden class="anchor" aria-hidden="true" href="#creating-a-custom-hf-compatible-dataset">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> datasets <span style="color:#f92672">import</span> Dataset
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>records <span style="color:#f92672">=</span> [{<span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;Metformin is...&#34;</span>}, {<span style="color:#e6db74">&#34;text&#34;</span>: <span style="color:#e6db74">&#34;Atorvastatin is...&#34;</span>}]
+</span></span><span style="display:flex;"><span>dataset <span style="color:#f92672">=</span> Dataset<span style="color:#f92672">.</span>from_list(records)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Push to HF Hub so anyone can use it</span>
+</span></span><span style="display:flex;"><span>dataset<span style="color:#f92672">.</span>push_to_hub(<span style="color:#e6db74">&#34;your-username/your-dataset-name&#34;</span>, private<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><hr>
+<h2 id="11-hugging-face-ecosystem-overview">11. Hugging Face Ecosystem Overview<a hidden class="anchor" aria-hidden="true" href="#11-hugging-face-ecosystem-overview">#</a></h2>
+<h3 id="major-llm-providers-from-class">Major LLM Providers (from class)<a hidden class="anchor" aria-hidden="true" href="#major-llm-providers-from-class">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>Company</th>
+          <th>Model</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>DeepSeek</td>
+          <td>DeepSeek (China)</td>
+      </tr>
+      <tr>
+          <td>Sarvam AI</td>
+          <td>Sarvam (India)</td>
+      </tr>
+      <tr>
+          <td>Mistral AI</td>
+          <td>Mistral (France)</td>
+      </tr>
+      <tr>
+          <td>OpenAI</td>
+          <td>GPT (USA)</td>
+      </tr>
+      <tr>
+          <td>Meta</td>
+          <td>LLaMA</td>
+      </tr>
+      <tr>
+          <td>Google</td>
+          <td>Gemma</td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="hf-automodel--how-it-works">HF AutoModel — How It Works<a hidden class="anchor" aria-hidden="true" href="#hf-automodel--how-it-works">#</a></h3>
+<pre tabindex="0"><code>AutoModel (wrapper)
+    ↓
+RAW base model (weights)
+    ↓ processed through
+BERT (encoder) → Encoder layers → Process vectors → Prediction head
+GPT/LLaMA (decoder) → Decoder layers → Next token prediction
+</code></pre><p>BERT-Base architecture:</p>
+<ul>
+<li>12 Transformer (encoder) layers</li>
+<li>768 hidden units</li>
+<li>12 attention heads</li>
+<li>110M parameters</li>
+<li>FFNN hidden size: 3072 (4 × 768)</li>
+</ul>
+<hr>
+<h2 id="12-complete-code-walkthrough">12. Complete Code Walkthrough<a hidden class="anchor" aria-hidden="true" href="#12-complete-code-walkthrough">#</a></h2>
+<h3 id="end-to-end-summary-what-each-cell-does">End-to-End Summary (what each cell does)<a hidden class="anchor" aria-hidden="true" href="#end-to-end-summary-what-each-cell-does">#</a></h3>
+<pre tabindex="0"><code>Cell 9:   Config dataclass — all hyperparameters
+Cell 17:  extract_pdf_pages() — PyMuPDF text extraction
+Cell 25:  clean_pdf_text() — 13-step cleaning pipeline
+Cell 30:  split_into_paragraph_records() — paragraph splitting
+Cell 35:  Dataset.from_list() — HF Dataset creation
+Cell 40:  train_test_split() — 85/15 split
+Cell 42:  AutoTokenizer.from_pretrained() — load tokenizer
+Cell 44:  tokenize_function() — text → token IDs
+Cell 50:  create_training_blocks() — text packing into 512-token blocks
+Cell 59:  AutoModelForCausalLM + BitsAndBytesConfig — 4-bit model load
+Cell 60:  LoraConfig — define adapter structure
+Cell 61:  get_peft_model() — attach LoRA to base model
+Cell 63:  DataCollatorForLanguageModeling — batch preparation
+Cell 68:  Trainer() — assemble all components
+Cell 70:  trainer.train() — start training!
+Cell 72:  save_pretrained() — save adapter
+Cell 76:  push_to_hub() — upload to HF Hub
+Cell 82:  PeftModel.from_pretrained() — reload for inference
+Cell 83:  generate_completion() — text continuation inference
+Cell 90:  merge_and_unload() — merge adapter permanently
+</code></pre><hr>
+<h2 id="13-inference-using-your-fine-tuned-model">13. Inference: Using Your Fine-Tuned Model<a hidden class="anchor" aria-hidden="true" href="#13-inference-using-your-fine-tuned-model">#</a></h2>
+<h3 id="non-instruction-inference-text-continuation">Non-Instruction Inference (Text Continuation)<a hidden class="anchor" aria-hidden="true" href="#non-instruction-inference-text-continuation">#</a></h3>
+<p>Since Stage 1 is trained on raw text, use <strong>continuation-style prompts</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">generate_completion</span>(prompt: str, max_new_tokens: int <span style="color:#f92672">=</span> <span style="color:#ae81ff">120</span>) <span style="color:#f92672">-&gt;</span> str:
+</span></span><span style="display:flex;"><span>    device <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;cuda&#34;</span> <span style="color:#66d9ef">if</span> torch<span style="color:#f92672">.</span>cuda<span style="color:#f92672">.</span>is_available() <span style="color:#66d9ef">else</span> <span style="color:#e6db74">&#34;cpu&#34;</span>
+</span></span><span style="display:flex;"><span>    inputs <span style="color:#f92672">=</span> inference_tokenizer(prompt, return_tensors<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;pt&#34;</span>)<span style="color:#f92672">.</span>to(device)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">with</span> torch<span style="color:#f92672">.</span>no_grad():
+</span></span><span style="display:flex;"><span>        outputs <span style="color:#f92672">=</span> inference_model<span style="color:#f92672">.</span>generate(
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">**</span>inputs,
+</span></span><span style="display:flex;"><span>            max_new_tokens<span style="color:#f92672">=</span>max_new_tokens,
+</span></span><span style="display:flex;"><span>            do_sample<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>,
+</span></span><span style="display:flex;"><span>            temperature<span style="color:#f92672">=</span><span style="color:#ae81ff">0.7</span>,    <span style="color:#75715e"># Lower = more deterministic</span>
+</span></span><span style="display:flex;"><span>            top_p<span style="color:#f92672">=</span><span style="color:#ae81ff">0.9</span>,          <span style="color:#75715e"># Nucleus sampling</span>
+</span></span><span style="display:flex;"><span>            repetition_penalty<span style="color:#f92672">=</span><span style="color:#ae81ff">1.1</span>,
+</span></span><span style="display:flex;"><span>            pad_token_id<span style="color:#f92672">=</span>inference_tokenizer<span style="color:#f92672">.</span>eos_token_id,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> inference_tokenizer<span style="color:#f92672">.</span>decode(outputs[<span style="color:#ae81ff">0</span>], skip_special_tokens<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Example prompts (continuation style — NOT Q&amp;A yet)</span>
+</span></span><span style="display:flex;"><span>prompts <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Metformin is one of the most widely prescribed oral antihyperglycemic agents&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Clinical trials have demonstrated that combining Atorvastatin with Ezetimibe&#34;</span>,
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><h3 id="instruction-inference-qa-style--stage-2">Instruction Inference (Q&amp;A Style — Stage 2)<a hidden class="anchor" aria-hidden="true" href="#instruction-inference-qa-style--stage-2">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">build_instruction_prompt</span>(instruction, input_text<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span>):
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> input_text:
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> (
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Instruction:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>instruction<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Input:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>input_text<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Response:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;### Instruction:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">{</span>instruction<span style="color:#e6db74">}</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">### Response:</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Example questions</span>
+</span></span><span style="display:flex;"><span>test_questions <span style="color:#f92672">=</span> [
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Explain the primary mechanism of action of metformin.&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Why can atorvastatin and ezetimibe reduce LDL-C more effectively together?&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;Summarize the role of lipid nanoparticles in mRNA vaccines.&#34;</span>,
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><hr>
+<h2 id="14-saving-merging-and-deploying-adapters">14. Saving, Merging, and Deploying Adapters<a hidden class="anchor" aria-hidden="true" href="#14-saving-merging-and-deploying-adapters">#</a></h2>
+<h3 id="saving-the-adapter">Saving the Adapter<a hidden class="anchor" aria-hidden="true" href="#saving-the-adapter">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>trainer<span style="color:#f92672">.</span>model<span style="color:#f92672">.</span>save_pretrained(config<span style="color:#f92672">.</span>adapter_dir)
+</span></span><span style="display:flex;"><span>tokenizer<span style="color:#f92672">.</span>save_pretrained(config<span style="color:#f92672">.</span>adapter_dir)
+</span></span></code></pre></div><p>Files saved: <code>adapter_config.json</code>, <code>adapter_model.safetensors</code> — only ~30MB!</p>
+<h3 id="pushing-to-hugging-face-hub">Pushing to Hugging Face Hub<a hidden class="anchor" aria-hidden="true" href="#pushing-to-hugging-face-hub">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> huggingface_hub <span style="color:#f92672">import</span> notebook_login
+</span></span><span style="display:flex;"><span>notebook_login()  <span style="color:#75715e"># Enter your HF token</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model<span style="color:#f92672">.</span>push_to_hub(<span style="color:#e6db74">&#34;your-username/pharma-tinyllama-lora&#34;</span>, private<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>tokenizer<span style="color:#f92672">.</span>push_to_hub(<span style="color:#e6db74">&#34;your-username/pharma-tinyllama-lora&#34;</span>, private<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span></code></pre></div><h3 id="merging-for-deployment">Merging for Deployment<a hidden class="anchor" aria-hidden="true" href="#merging-for-deployment">#</a></h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">from</span> peft <span style="color:#f92672">import</span> PeftModel
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Load base model (full precision for safe merge)</span>
+</span></span><span style="display:flex;"><span>base_model <span style="color:#f92672">=</span> AutoModelForCausalLM<span style="color:#f92672">.</span>from_pretrained(config<span style="color:#f92672">.</span>model_name, torch_dtype<span style="color:#f92672">=</span>torch<span style="color:#f92672">.</span>float16)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Attach adapter</span>
+</span></span><span style="display:flex;"><span>model_with_adapter <span style="color:#f92672">=</span> PeftModel<span style="color:#f92672">.</span>from_pretrained(base_model, config<span style="color:#f92672">.</span>adapter_dir)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Merge permanently</span>
+</span></span><span style="display:flex;"><span>merged_model <span style="color:#f92672">=</span> model_with_adapter<span style="color:#f92672">.</span>merge_and_unload()
+</span></span><span style="display:flex;"><span>merged_model<span style="color:#f92672">.</span>save_pretrained(<span style="color:#e6db74">&#34;/content/merged_model&#34;</span>)
+</span></span></code></pre></div><h3 id="full-three-stage-pipeline-summary">Full Three-Stage Pipeline Summary<a hidden class="anchor" aria-hidden="true" href="#full-three-stage-pipeline-summary">#</a></h3>
+<pre tabindex="0"><code>TinyLlama Base (1.1B params, general language)
+          ↓
+Stage 1 LoRA Adapter — Non-Instruction FT on pharma PDFs
+    Learns: pharma terminology, drug names, domain patterns
+          ↓  (merge)
+Stage 1 Merged Model
+          ↓
+Stage 2 LoRA Adapter — Instruction FT on pharma Q&amp;A
+    Learns: how to answer pharma questions correctly
+          ↓  (merge)
+Stage 2 Merged Model
+          ↓
+Stage 3 LoRA Adapter — Preference Tuning (RLHF/DPO)
+    Learns: which responses humans prefer
+          ↓
+Final Pharma-Tuned Model — knows domain + follows instructions + aligned with preferences
+</code></pre><hr>
+<hr>
+<h2 id="quick-reference-cheat-sheet">Quick Reference Cheat Sheet<a hidden class="anchor" aria-hidden="true" href="#quick-reference-cheat-sheet">#</a></h2>
+<pre tabindex="0"><code>Non-Instruction FT:
+  Data → raw text (PDF, DOCX)  |  Task → next token prediction  |  Output → domain language model
+
+Instruction FT:
+  Data → {instruction, input, output}  |  Task → learn to respond  |  Output → chat/QA model
+
+Preference Tuning:
+  Data → {prompt, chosen, rejected}  |  Task → learn human preference  |  Output → aligned model
+
+LoRA: Train only small adapter matrices (A, B) → ~0.37% of parameters
+QLoRA: Load model in 4-bit → add LoRA → train on consumer GPU
+Quantization: float32 (4B) → fp16 (2B) → 4-bit (0.5B) per weight
+Tokenization: BPE (GPT/LLaMA), WordPiece (BERT)
+Text Packing: No padding waste → concatenate all tokens → split into 512-token blocks
+Labels = -100: Tell PyTorch to ignore padding in loss calculation
+</code></pre><hr>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-3/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Demystifying the LLM Training and Fine-Tuning Pipeline-part-3</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Krishna Raj</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

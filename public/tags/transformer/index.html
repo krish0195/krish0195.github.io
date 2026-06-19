@@ -139,6 +139,53 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">Transformer 5: The QKV Mathematical Engine
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Learnable Parameters The magic of the Transformer lies in the three weight matrices: $W_Q, W_K,$ and $W_V$. These are not fixed; they are learnable parameters that the model refines over thousands of training epochs to better understand context.
+The Attention Flow Linear Transformation: Project the 512-dim embedding into 64-dim Q, K, and V vectors. Scoring: Dot product of Query and Key to find similarity. Scaling: Divide by $\sqrt{d_k}$ to prevent gradient vanishing. Softmax: Convert scores into weights that sum to 1. Contextual Output: Multiply weights by the Value vectors to produce the final contextual representation. This process allows the word “bank” to physically move its position in vector space closer to “money” or “river” depending on the sentence.
+</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-12 00:00:00 +0000 UTC'>May 12, 2026</span>&nbsp;·&nbsp;<span>1 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Transformer 5: The QKV Mathematical Engine" href="http://localhost:1313/posts/transformer-5/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Transformer 6: Transformer Architecture &amp; Mechanics
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>\
+Deep Dive: Transformer Architecture &amp; Mechanics Class Date: May 3, 2026
+Topic: Positional Encoding, Self-Attention, and Layer Normalization
+1. The Core Challenge: Parallelism [cite_start]Transformers process all tokens in a sentence simultaneously (in parallel)[cite: 30]. [cite_start]While this makes them incredibly fast compared to older models, it creates a problem: the model does not inherently know the order of words[cite: 31]. [cite_start]For example, without extra info, “Dog bites man” and “man bites dog” look exactly the same to the model[cite: 36, 37].
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-12 00:00:00 +0000 UTC'>May 12, 2026</span>&nbsp;·&nbsp;<span>3 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Transformer 6: Transformer Architecture & Mechanics" href="http://localhost:1313/posts/transformer-6/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Transformer 7: he Transformer Decoder: Mechanics and Autoregressive Inference
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>\
+The Transformer Decoder: Mechanics and Autoregressive Inference Class Date: May 9, 2026
+Topic: Decoder Architecture, Masked Self-Attention, and Cross-Attention
+1. Overview of the Decoder While the Encoder reads and understands the source sentence, the Decoder is responsible for generating the translated target sentence word by word. In the original research paper, the Decoder consists of a stack of 6 identical layers ($N_x=6$).
+The Decoder Block Components: Each layer in the Decoder contains three primary sub-layers:
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2026-05-12 00:00:00 +0000 UTC'>May 12, 2026</span>&nbsp;·&nbsp;<span>2 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span></footer>
+  <a class="entry-link" aria-label="post link to Transformer 7: he Transformer Decoder: Mechanics and Autoregressive Inference" href="http://localhost:1313/posts/transformer-7/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Transformer 4: Positional Encoding &amp; The Math of Self-Attention
     </h2>
   </header>

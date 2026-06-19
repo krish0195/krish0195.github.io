@@ -6,8 +6,91 @@
     <description>Recent content on Krishna Raj</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 11 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jun 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Demystifying the LLM Training and Fine-Tuning Pipeline-part-3</title>
+      <link>http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-3/</link>
+      <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-3/</guid>
+      <description>&lt;h1 id=&#34;fine-tuning-large-language-models-a-complete-guide&#34;&gt;Fine-Tuning Large Language Models: A Complete Guide&lt;/h1&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;From pretraining pipelines to LoRA, QLoRA, and preference alignment — everything you need to understand modern LLM fine-tuning.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;what-is-fine-tuning&#34;&gt;What is Fine-Tuning?&lt;/h2&gt;
+&lt;p&gt;Fine-tuning is the process of taking an &lt;strong&gt;already trained model&lt;/strong&gt; and training it further on domain-specific or task-specific data so that it performs better for a particular use case.&lt;/p&gt;
+&lt;p&gt;Rather than building a model from scratch (which requires billions of dollars, massive compute, and months of training), fine-tuning lets you adapt a powerful open-source model to your own needs in hours or days on a single GPU.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Demystifying the LLM Training and Fine-Tuning Pipeline-part-2</title>
+      <link>http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-2/</link>
+      <pubDate>Thu, 04 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-2/</guid>
+      <description>&lt;h1 id=&#34;deep-dive-into-llm-training-pipelines-optimization-frameworks-and-low-level-gpu-acceleration&#34;&gt;Deep Dive into LLM Training Pipelines, Optimization Frameworks, and Low-Level GPU Acceleration&lt;/h1&gt;
+&lt;p&gt;This comprehensive guide breaks down the core concepts of Large Language Model (LLM) post-pretraining pipelines, performance evaluation, the Hugging Face ecosystem, and advanced low-level GPU acceleration techniques using &lt;strong&gt;Unsloth&lt;/strong&gt;, &lt;strong&gt;CUDA&lt;/strong&gt;, and &lt;strong&gt;Triton&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;1-the-llm-lifecycle--post-pretraining-pipeline&#34;&gt;1. The LLM Lifecycle &amp;amp; Post-Pretraining Pipeline&lt;/h2&gt;
+&lt;p&gt;To build a production-grade LLM tailored to specific use cases, models progress through three distinct, sequential phases:&lt;/p&gt;
+&lt;p&gt;[ Pretraining ] ──&amp;gt; [ Supervised Fine-Tuning (SFT) ] ──&amp;gt; [ Alignment / Preference Tuning ]&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Demystifying the LLM Training and Fine-Tuning Pipeline-Part-1</title>
+      <link>http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline/</link>
+      <pubDate>Tue, 02 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline/</guid>
+      <description>&lt;h1 id=&#34;master-class-demystifying-the-llm-training-and-fine-tuning-pipeline&#34;&gt;Master Class: Demystifying the LLM Training and Fine-Tuning Pipeline&lt;/h1&gt;
+&lt;p&gt;When building applications with Large Language Models (LLMs), off-the-shelf models don&amp;rsquo;t always cut it [cite: 2]. Whether you need a model to understand highly specific pharmaceutical molecular data [cite: 50] or seamlessly handle complex conversational workflows [cite: 53, 56], &lt;strong&gt;fine-tuning&lt;/strong&gt; is the bridge between a generic AI and a domain expert [cite: 2].&lt;/p&gt;
+&lt;p&gt;This guide breaks down the end-to-end LLM training pipeline [cite: 3], explores the operational differences between Full and Partial Fine-Tuning [cite: 28, 30], and maps out modern preference alignment frameworks [cite: 43, 110].&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Demystifying the LLM Gateway: Building Robust GenAI Apps with LiteLLM and LangChain</title>
+      <link>http://localhost:1313/posts/demystifying-the-llm-gateway/</link>
+      <pubDate>Sat, 23 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/demystifying-the-llm-gateway/</guid>
+      <description>&lt;p&gt;import os&lt;/p&gt;
+&lt;p&gt;blog_content = &amp;ldquo;&amp;rdquo;&amp;quot;# Demystifying the LLM Gateway: Building Robust GenAI Apps with LiteLLM and LangChain&lt;/p&gt;
+&lt;p&gt;If you are building Generative AI applications for production, you have likely run into a common roadblock: &lt;strong&gt;managing multiple LLM providers is messy.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Hardcoding specific APIs or relying entirely on a single model provider introduces significant vulnerabilities. What happens if a service suffers an outage? How do you track token costs across different departments? How do you implement robust security guardrails without rewriting your core application logic?&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The Evolution of Large Language Models &amp; Multimodal AI</title>
+      <link>http://localhost:1313/posts/the-evolution-of-large-language-models--multimodal-ai/</link>
+      <pubDate>Sat, 16 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/the-evolution-of-large-language-models--multimodal-ai/</guid>
+      <description>&lt;h1 id=&#34;master-class-notes-the-evolution-of-large-language-models--multimodal-ai&#34;&gt;Master Class Notes: The Evolution of Large Language Models &amp;amp; Multimodal AI&lt;/h1&gt;
+&lt;h2 id=&#34;1-the-timeline-and-early-architecture-evolution-20172018&#34;&gt;1. The Timeline and Early Architecture Evolution (2017–2018)&lt;/h2&gt;
+&lt;p&gt;The journey of modern Language Models started around &lt;strong&gt;2017–2018&lt;/strong&gt;. One of the pivotal early architectures was &lt;strong&gt;ULMFiT (2017)&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Early-stage Model training pipelines generally followed a two-step process:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Stage 1: Pretraining&lt;/strong&gt; (Self-Supervised/Unsupervised).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stage 2: Supervised Fine-Tuning (SFT)&lt;/strong&gt; (Instruction Fine-Tuning / Task-Specific).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2 id=&#34;2-core-transformer-families&#34;&gt;2. Core Transformer Families&lt;/h2&gt;
+&lt;p&gt;The heart of the Transformer is &lt;strong&gt;self-attention&lt;/strong&gt;, a mechanism where the model understands each token in a sentence within the context of all other tokens in that same sentence.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Transformer 5: The QKV Mathematical Engine</title>
+      <link>http://localhost:1313/posts/transformer-5/</link>
+      <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-5/</guid>
+      <description>Breaking down the matrix operations behind Query, Key, and Value vectors and the importance of the scaling factor.</description>
+    </item>
+    <item>
+      <title>Transformer 6: Transformer Architecture &amp; Mechanics</title>
+      <link>http://localhost:1313/posts/transformer-6/</link>
+      <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-6/</guid>
+      <description>Breaking down the matrix operations behind Query, Key, and Value vectors and the importance of the scaling factor.</description>
+    </item>
+    <item>
+      <title>Transformer 7: he Transformer Decoder: Mechanics and Autoregressive Inference</title>
+      <link>http://localhost:1313/posts/transformer-7/</link>
+      <pubDate>Tue, 12 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/transformer-7/</guid>
+      <description>**Topic:** Decoder Architecture, Masked Self-Attention, and Cross-Attention.</description>
+    </item>
     <item>
       <title>Transformer 4: Positional Encoding &amp; The Math of Self-Attention</title>
       <link>http://localhost:1313/posts/transformer-4/</link>

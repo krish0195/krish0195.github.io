@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto" data-theme="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Demystifying the LLM Training and Fine-Tuning Pipeline-part-3 | Krishna Raj</title>
+<meta name="keywords" content="">
+<meta name="description" content="Fine-Tuning Large Language Models: A Complete Guide
+
+From pretraining pipelines to LoRA, QLoRA, and preference alignment — everything you need to understand modern LLM fine-tuning.
+
+
+What is Fine-Tuning?
+Fine-tuning is the process of taking an already trained model and training it further on domain-specific or task-specific data so that it performs better for a particular use case.
+Rather than building a model from scratch (which requires billions of dollars, massive compute, and months of training), fine-tuning lets you adapt a powerful open-source model to your own needs in hours or days on a single GPU.">
+<meta name="author" content="Krishna Raj">
+<link rel="canonical" href="http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-3/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-3/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+                color-scheme: dark;
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .toc {
+                background: var(--entry);
+            }
+        }
+
+        @media (prefers-color-scheme: light) {
+            .list::-webkit-scrollbar-thumb {
+                border-color: var(--code-bg);
+            }
+        }
+
+    </style>
+</noscript>
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else if (localStorage.getItem("pref-theme") === "light") {
+       document.querySelector("html").dataset.theme = 'light';
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.querySelector("html").dataset.theme = 'dark';
+    } else {
+        document.querySelector("html").dataset.theme = 'light';
+    }
+
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Krishna Raj (Alt + H)">Krishna Raj</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Home">
+                    <span>Home</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/posts/" title="Blog">
+                    <span>Blog</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/contact/" title="Contact">
+                    <span>Contact</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">My Knowledge sharing </a></div>
+    <h1 class="post-title entry-hint-parent">
+      Demystifying the LLM Training and Fine-Tuning Pipeline-part-3
+    </h1>
+    <div class="post-meta"><span title='2026-06-06 00:00:00 +0000 UTC'>June 6, 2026</span>&nbsp;·&nbsp;<span>7 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span>
+
+</div>
+  </header> 
+  <div class="post-content"><h1 id="fine-tuning-large-language-models-a-complete-guide">Fine-Tuning Large Language Models: A Complete Guide<a hidden class="anchor" aria-hidden="true" href="#fine-tuning-large-language-models-a-complete-guide">#</a></h1>
+<blockquote>
+<p><em>From pretraining pipelines to LoRA, QLoRA, and preference alignment — everything you need to understand modern LLM fine-tuning.</em></p>
+</blockquote>
+<hr>
+<h2 id="what-is-fine-tuning">What is Fine-Tuning?<a hidden class="anchor" aria-hidden="true" href="#what-is-fine-tuning">#</a></h2>
+<p>Fine-tuning is the process of taking an <strong>already trained model</strong> and training it further on domain-specific or task-specific data so that it performs better for a particular use case.</p>
+<p>Rather than building a model from scratch (which requires billions of dollars, massive compute, and months of training), fine-tuning lets you adapt a powerful open-source model to your own needs in hours or days on a single GPU.</p>
+<hr>
+<h2 id="the-llm-training-pipeline">The LLM Training Pipeline<a hidden class="anchor" aria-hidden="true" href="#the-llm-training-pipeline">#</a></h2>
+<p>Every major LLM you interact with today — whether from Meta, Mistral, OpenAI, or Deepseek — goes through a structured training pipeline with three stages:</p>
+<pre tabindex="0"><code>Stage 1: Pretraining  →  Stage 2: Instruction Fine-tuning (SFT)  →  Stage 3: Preference Tuning
+</code></pre><h3 id="1-pretraining-unsupervised--self-supervised-learning">1. Pretraining (Unsupervised / Self-supervised Learning)<a hidden class="anchor" aria-hidden="true" href="#1-pretraining-unsupervised--self-supervised-learning">#</a></h3>
+<p>The model is trained on <strong>raw, internet-scale data</strong> — books, websites, code, articles — without any human labels. The objective is next-token prediction: given a sequence of words, predict the next one.</p>
+<ul>
+<li><strong>Output</strong>: A &ldquo;raw&rdquo; base model (e.g., <code>meta-llama/Meta-Llama-3-8B</code>)</li>
+<li><strong>Data format</strong>: Unstructured text (no instruction/answer pairs)</li>
+<li><strong>Goal</strong>: Learn general knowledge, grammar, reasoning, world facts</li>
+</ul>
+<p>This is the most compute-intensive stage. Training Meta-Llama-3-8B, for example, required <strong>trillions of tokens</strong> and thousands of GPUs.</p>
+<h3 id="2-supervised-fine-tuning--sft--instruction-tuning">2. Supervised Fine-Tuning — SFT / Instruction Tuning<a hidden class="anchor" aria-hidden="true" href="#2-supervised-fine-tuning--sft--instruction-tuning">#</a></h3>
+<p>After pretraining, the raw model knows <em>a lot</em>, but it doesn&rsquo;t know how to <em>follow instructions</em>. SFT teaches it to respond helpfully given a user prompt.</p>
+<ul>
+<li><strong>Data format</strong>: Input-Output pairs (IP → OP), e.g., <code>{&quot;instruction&quot;: &quot;Summarize this text&quot;, &quot;response&quot;: &quot;...&quot;}</code></li>
+<li><strong>Output</strong>: An instruction-tuned model (e.g., <code>meta-llama/Meta-Llama-3-8B-Instruct</code>)</li>
+<li><strong>Goal</strong>: Teach the model conversational behavior, Q&amp;A, chat</li>
+</ul>
+<p>This is <strong>supervised learning</strong> — every training example has a correct label (the expected output).</p>
+<h3 id="3-preference-tuning-preference-alignment">3. Preference Tuning (Preference Alignment)<a hidden class="anchor" aria-hidden="true" href="#3-preference-tuning-preference-alignment">#</a></h3>
+<p>Even after SFT, models can produce outputs that are factually correct but poorly phrased, unsafe, or not aligned with human preferences. Preference tuning fixes this.</p>
+<p>The key idea: <strong>collect human feedback</strong> on model outputs (e.g., &ldquo;Which response do you prefer?&rdquo;), then retrain the model to produce preferred responses.</p>
+<p>Popular preference alignment algorithms:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Algorithm</th>
+          <th>Notes</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>RLHF</strong> (Reinforcement Learning from Human Feedback)</td>
+          <td>Used by OpenAI; involves a reward model + PPO (Proximal Policy Optimization)</td>
+      </tr>
+      <tr>
+          <td><strong>GRPO</strong></td>
+          <td>Group Relative Policy Optimization; efficient alternative to PPO</td>
+      </tr>
+      <tr>
+          <td><strong>DPO</strong> (Direct Preference Optimization)</td>
+          <td>Simpler than RLHF; directly optimizes on preference pairs without a reward model</td>
+      </tr>
+      <tr>
+          <td><strong>ORPO</strong></td>
+          <td>Odds Ratio Preference Optimization; even more efficient variant</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="real-world-example-pharma-use-case">Real-World Example: Pharma Use Case<a hidden class="anchor" aria-hidden="true" href="#real-world-example-pharma-use-case">#</a></h2>
+<p>Imagine you work at a pharmaceutical company and have a large collection of internal documents on molecule studies.</p>
+<p><strong>The problem</strong>: Training an LLM from scratch is extremely difficult and expensive.</p>
+<p><strong>The solution</strong>: Use an open-source model and fine-tune it.</p>
+<ul>
+<li>
+<p>If your goal is <strong>data generation</strong> (not a chatbot), use the raw base model:
+<code>meta-llama/Meta-Llama-3-8B</code> → fine-tune on your pharma dataset → specialized text generator</p>
+</li>
+<li>
+<p>If your goal is <strong>Conversational AI / Q&amp;A / Chatbot</strong>, use the instruction-tuned model:
+<code>meta-llama/Meta-Llama-3-8B-Instruct</code> → further fine-tune on your IP→OP pairs</p>
+</li>
+</ul>
+<hr>
+<h2 id="where-to-fine-tune-hugging-face-ecosystem">Where to Fine-Tune: Hugging Face Ecosystem<a hidden class="anchor" aria-hidden="true" href="#where-to-fine-tune-hugging-face-ecosystem">#</a></h2>
+<p><a href="https://huggingface.co">Hugging Face</a> is the central hub for open-source ML:</p>
+<ul>
+<li>
+<p><strong><code>datasets</code> library</strong>: Load thousands of datasets from companies, universities, and the open-source community.</p>
+<ul>
+<li><strong>Inbuilt datasets</strong>: Uploaded by researchers — ready to use for common tasks</li>
+<li><strong>Custom datasets</strong>: Your own personal or enterprise data</li>
+</ul>
+</li>
+<li>
+<p><strong>Supported data formats</strong>:</p>
+<ul>
+<li>Standard: <code>csv</code>, <code>xlsx</code>, <code>tsv</code>, <code>json</code></li>
+<li>Big-data binary formats: <code>parquet</code>, <code>rc</code>, <code>orc</code></li>
+</ul>
+</li>
+</ul>
+<p>You can also convert your own data to HF-compatible format and upload it publicly so others can use it.</p>
+<hr>
+<h2 id="how-transformers-process-data">How Transformers Process Data<a hidden class="anchor" aria-hidden="true" href="#how-transformers-process-data">#</a></h2>
+<p>Before fine-tuning, data goes through a well-defined pipeline inside the Transformer:</p>
+<pre tabindex="0"><code>Raw Text
+   ↓
+Tokenization (BPE / WordPiece)
+   ↓
+Token IDs
+   ↓
+Word Embeddings
+   ↓
+Positional Encoding
+   ↓
+Self-Attention
+   ↓
+FFNN (Feed-Forward Neural Network)
+   ↓
+Output
+</code></pre><h3 id="tokenization">Tokenization<a hidden class="anchor" aria-hidden="true" href="#tokenization">#</a></h3>
+<p>Tokens are sub-word units, not whole words. Two dominant algorithms:</p>
+<ul>
+<li><strong>BPE (Byte Pair Encoding)</strong> — Used by GPT models</li>
+<li><strong>WordPiece</strong> — Used by BERT</li>
+</ul>
+<p>Example:</p>
+<pre tabindex="0"><code>Input:    &#34;I love AI&#34;
+Tokens:   [&#34;I&#34;, &#34;love&#34;, &#34;AI&#34;]
+Token IDs: [40, 1842, 9552]
+</code></pre><h3 id="model-parameters">Model Parameters<a hidden class="anchor" aria-hidden="true" href="#model-parameters">#</a></h3>
+<p>Every model is defined by its <strong>parameters</strong> — weights and biases in two key components:</p>
+<ul>
+<li><strong>Self-Attention layers</strong> → Q (Query), K (Key), V (Value) weight matrices</li>
+<li><strong>FFNN layers</strong> → weight matrices for the feed-forward network</li>
+</ul>
+<p>Fine-tuning = updating some or all of these parameters on your new dataset.</p>
+<hr>
+<h2 id="bert-architecture-encoder-only-models">BERT Architecture (Encoder-only Models)<a hidden class="anchor" aria-hidden="true" href="#bert-architecture-encoder-only-models">#</a></h2>
+<p>BERT is an <strong>encoder-only</strong> model, meaning it processes entire input sequences bidirectionally — unlike GPT which is decoder-only (left-to-right).</p>
+<p><strong>BERT-Base</strong>: 12 Transformer layers, 768 hidden units, 12 attention heads → <strong>110M parameters</strong>
+<strong>BERT-Large</strong>: 24 Transformer layers, 1024 hidden units, 16 attention heads → <strong>340M parameters</strong></p>
+<p>Inside BERT&rsquo;s feed-forward network:</p>
+<ul>
+<li>Input dimension: 768 (or 512)</li>
+<li>Hidden dimension: <strong>3072</strong> (4× the input, standard Transformer scaling)</li>
+<li>Output dimension: 768 (or 512)</li>
+</ul>
+<p>The <code>AutoModel</code> API in Hugging Face loads the raw BERT encoder. To make predictions, you attach a <strong>head</strong> on top (e.g., a classification head for sentiment analysis).</p>
+<hr>
+<h2 id="types-of-fine-tuning">Types of Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#types-of-fine-tuning">#</a></h2>
+<h3 id="parameter-level-full-vs-partial">Parameter Level: Full vs. Partial<a hidden class="anchor" aria-hidden="true" href="#parameter-level-full-vs-partial">#</a></h3>
+<h4 id="1-full-fine-tuning">1. Full Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#1-full-fine-tuning">#</a></h4>
+<ul>
+<li><strong>Retrain ALL parameters</strong> (weights &amp; biases) of the model</li>
+<li>Requires high GPU power and large infrastructure</li>
+<li>Best performance but most expensive</li>
+<li>Not practical for most use cases</li>
+</ul>
+<h4 id="2-partial-fine-tuning--peft-parameter-efficient-fine-tuning">2. Partial Fine-Tuning — PEFT (Parameter-Efficient Fine-Tuning)<a hidden class="anchor" aria-hidden="true" href="#2-partial-fine-tuning--peft-parameter-efficient-fine-tuning">#</a></h4>
+<ul>
+<li>Update only a <strong>subset of parameters</strong></li>
+<li>Runs on a <strong>single GPU</strong> with small VRAM</li>
+<li>Requires small infrastructure</li>
+<li>Nearly matches full fine-tuning performance for most tasks</li>
+</ul>
+<p>PEFT is the go-to approach today for custom fine-tuning.</p>
+<hr>
+<h3 id="old-school-partial-fine-tuning-pre-llm-era">Old School Partial Fine-Tuning (Pre-LLM era)<a hidden class="anchor" aria-hidden="true" href="#old-school-partial-fine-tuning-pre-llm-era">#</a></h3>
+<p>Before LLMs, models like CNN (VGG, ResNet), BERT, BART, and T5 were fine-tuned using layer-freezing strategies:</p>
+<ol>
+<li><strong>Freeze all layers, retrain only the output layer</strong> — fastest, least data needed</li>
+<li><strong>Freeze early layers, retrain later layers</strong> — middle ground</li>
+</ol>
+<p>These methods worked for CV and NLP tasks but are impractical for billion-parameter LLMs.</p>
+<hr>
+<h2 id="peft-methods-for-llms">PEFT Methods for LLMs<a hidden class="anchor" aria-hidden="true" href="#peft-methods-for-llms">#</a></h2>
+<p>Modern PEFT methods add small trainable modules to a frozen model, instead of updating the entire parameter space.</p>
+<h3 id="1-lora--low-rank-adaptation--most-popular">1. LoRA — Low-Rank Adaptation ⭐ (Most Popular)<a hidden class="anchor" aria-hidden="true" href="#1-lora--low-rank-adaptation--most-popular">#</a></h3>
+<p>LoRA is the dominant fine-tuning method today. The key idea:</p>
+<p><strong>Instead of updating the full weight matrix W (which is huge), approximate the update as a product of two small low-rank matrices: ΔW = A × B</strong></p>
+<ul>
+<li>The original model weights are <strong>frozen</strong></li>
+<li>Only the small A and B matrices are trained</li>
+<li>At inference time, the LoRA weights are merged back: <code>W' = W + A×B</code></li>
+<li>Drastically reduces the number of trainable parameters</li>
+</ul>
+<p><strong>Why it works</strong>: Weight updates during fine-tuning tend to have a low intrinsic rank — meaning the meaningful changes live in a low-dimensional subspace.</p>
+<p><strong>Common LoRA targets</strong>: The Q, K, V, and output projection matrices in attention layers.</p>
+<h3 id="2-qlora--quantized-lora--even-more-efficient">2. QLoRA — Quantized LoRA ⭐⭐ (Even More Efficient)<a hidden class="anchor" aria-hidden="true" href="#2-qlora--quantized-lora--even-more-efficient">#</a></h3>
+<p>QLoRA combines LoRA with <strong>quantization</strong>:</p>
+<ul>
+<li>The base model is loaded in <strong>4-bit or 8-bit precision</strong> (quantized from float32 or float16)
+<ul>
+<li><code>float32 → float16 / bfloat16 → int8 → int4</code></li>
+</ul>
+</li>
+<li>LoRA adapters are trained in higher precision on top</li>
+<li>Enables fine-tuning <strong>70B+ parameter models on a single consumer GPU</strong></li>
+</ul>
+<p>This is the most practical method for individual researchers and small teams.</p>
+<h3 id="3-dora--weight-decomposed-low-rank-adaptation">3. DoRA — Weight-Decomposed Low-Rank Adaptation<a hidden class="anchor" aria-hidden="true" href="#3-dora--weight-decomposed-low-rank-adaptation">#</a></h3>
+<p>DoRA decomposes the pre-trained weight into <strong>magnitude</strong> and <strong>direction</strong> components, then applies LoRA-style updates to the directional component separately. Often outperforms LoRA on downstream tasks.</p>
+<h3 id="4-bitfit--ia-less-common">4. BitFit &amp; IA³ (Less Common)<a hidden class="anchor" aria-hidden="true" href="#4-bitfit--ia-less-common">#</a></h3>
+<ul>
+<li><strong>BitFit</strong>: Only fine-tune the bias terms — extremely parameter-efficient but limited</li>
+<li><strong>IA³</strong>: Rescales internal activations using learned vectors — very few parameters but works well for some tasks</li>
+<li>Both are largely superseded by LoRA/QLoRA in practice</li>
+</ul>
+<hr>
+<h2 id="tools-for-fine-tuning">Tools for Fine-Tuning<a hidden class="anchor" aria-hidden="true" href="#tools-for-fine-tuning">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th>Tool</th>
+          <th>Best For</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Hugging Face <code>transformers</code> + <code>trl</code></strong></td>
+          <td>Full pipeline, RLHF, DPO, SFT trainer</td>
+      </tr>
+      <tr>
+          <td><strong>Unsloth</strong></td>
+          <td>Fastest LoRA/QLoRA fine-tuning; 2-5× speedup vs standard HF</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<h2 id="llm-ecosystem-who-builds-what">LLM Ecosystem: Who Builds What<a hidden class="anchor" aria-hidden="true" href="#llm-ecosystem-who-builds-what">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th>Company</th>
+          <th>Model Family</th>
+          <th>Origin</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Meta</td>
+          <td>Llama (llama2, llama3, llama3.1, llama3.2)</td>
+          <td>USA</td>
+      </tr>
+      <tr>
+          <td>Mistral AI</td>
+          <td>Mistral, Mixtral</td>
+          <td>France</td>
+      </tr>
+      <tr>
+          <td>OpenAI</td>
+          <td>GPT-4, GPT-4o</td>
+          <td>USA</td>
+      </tr>
+      <tr>
+          <td>Deepseek</td>
+          <td>Deepseek-V2, V3, R1</td>
+          <td>China</td>
+      </tr>
+      <tr>
+          <td>Sarvam AI</td>
+          <td>Sarvam-1, 2</td>
+          <td>India</td>
+      </tr>
+  </tbody>
+</table>
+<p>All of these go through the same three-stage pipeline: Pretraining → SFT → Preference Tuning.</p>
+<hr>
+<h2 id="course-roadmap-upcoming-topics">Course Roadmap (Upcoming Topics)<a hidden class="anchor" aria-hidden="true" href="#course-roadmap-upcoming-topics">#</a></h2>
+<ul>
+<li>Remaining HuggingFace concepts</li>
+<li>Full fine-tuning pipeline using HuggingFace
+<ul>
+<li>Instruction tuning on custom raw docs</li>
+<li>Inbuilt instruction tuning datasets from HF</li>
+</ul>
+</li>
+<li>Fine-tuning pipeline using <strong>Unsloth</strong></li>
+<li><strong>LoRA, QLoRA, DoRA</strong> (deep dive + assignment)</li>
+<li><strong>RLHF, DPO</strong> (preference alignment in depth)</li>
+<li><strong>RAG &amp; MMRAG</strong> (Retrieval-Augmented Generation)</li>
+</ul>
+<hr>
+<h2 id="summary">Summary<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h2>
+<table>
+  <thead>
+      <tr>
+          <th>Stage</th>
+          <th>Method</th>
+          <th>Data</th>
+          <th>Output</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Pretraining</td>
+          <td>Self-supervised</td>
+          <td>Raw internet text</td>
+          <td>Base model</td>
+      </tr>
+      <tr>
+          <td>Instruction Tuning (SFT)</td>
+          <td>Supervised</td>
+          <td>IP → OP pairs</td>
+          <td>Instruct model</td>
+      </tr>
+      <tr>
+          <td>Preference Alignment</td>
+          <td>RLHF / DPO / GRPO</td>
+          <td>Human preference pairs</td>
+          <td>Aligned model</td>
+      </tr>
+      <tr>
+          <td>Custom Fine-tuning</td>
+          <td>Full FT / LoRA / QLoRA</td>
+          <td>Your domain data</td>
+          <td>Specialized model</td>
+      </tr>
+  </tbody>
+</table>
+<p>Fine-tuning has democratized AI — what once required a research lab with massive infrastructure can now be done by a single developer on a consumer GPU, thanks to PEFT methods like QLoRA and tools like Unsloth and Hugging Face.</p>
+<hr>
+<p><em>Notes compiled from Class 18 (23 May 2026) and Class 20 (30 May 2026)</em></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/posts/demystifying-the-llm-training-and-fine-tuning-pipeline-2/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Demystifying the LLM Training and Fine-Tuning Pipeline-part-2</span>
+  </a>
+</nav>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Krishna Raj</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu');
+    if (menu) {
+        
+        const scrollPosition = localStorage.getItem("menu-scroll-position");
+        if (scrollPosition) {
+            menu.scrollLeft = parseInt(scrollPosition, 10);
+        }
+        
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        const html = document.querySelector("html");
+        if (html.dataset.theme === "dark") {
+            html.dataset.theme = 'light';
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            html.dataset.theme = 'dark';
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = 'copy';
+
+        function copyingDone() {
+            copybutton.innerHTML = 'copied!';
+            setTimeout(() => {
+                copybutton.innerHTML = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

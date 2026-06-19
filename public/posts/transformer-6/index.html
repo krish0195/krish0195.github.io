@@ -5,15 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Krishna Raj</title>
-<meta name="keywords" content="">
-<meta name="description" content="\
-Deep Dive: Transformer Architecture &amp; Mechanics
-Class Date: May 3, 2026
-Topic: Positional Encoding, Self-Attention, and Layer Normalization
-
-1. The Core Challenge: Parallelism
-[cite_start]Transformers process all tokens in a sentence simultaneously (in parallel)[cite: 30]. [cite_start]While this makes them incredibly fast compared to older models, it creates a problem: the model does not inherently know the order of words[cite: 31]. [cite_start]For example, without extra info, &ldquo;Dog bites man&rdquo; and &ldquo;man bites dog&rdquo; look exactly the same to the model[cite: 36, 37].">
+<title>Transformer 6: Transformer Architecture &amp; Mechanics | Krishna Raj</title>
+<meta name="keywords" content="Transformer, Mathematics, Linear Algebra, QKV">
+<meta name="description" content="Breaking down the matrix operations behind Query, Key, and Value vectors and the importance of the scaling factor.">
 <meta name="author" content="Krishna Raj">
 <link rel="canonical" href="http://localhost:1313/posts/transformer-6/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.a29c24210eb31d9ce56f669c66a35c9c51b17376b7764e336a49af7dec914cf0.css" integrity="sha256-opwkIQ6zHZzlb2acZqNcnFGxc3a3dk4zakmvfeyRTPA=" rel="preload stylesheet" as="style">
@@ -141,12 +135,52 @@ Topic: Positional Encoding, Self-Attention, and Layer Normalization
   <header class="post-header">
     <div class="breadcrumbs"><a href="http://localhost:1313/">Home</a>&nbsp;»&nbsp;<a href="http://localhost:1313/posts/">My Knowledge sharing </a></div>
     <h1 class="post-title entry-hint-parent">
-      
+      Transformer 6: Transformer Architecture &amp; Mechanics
     </h1>
-    <div class="post-meta"><span>3 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span>
+    <div class="post-description">
+      Breaking down the matrix operations behind Query, Key, and Value vectors and the importance of the scaling factor.
+    </div>
+    <div class="post-meta"><span title='2026-05-12 00:00:00 +0000 UTC'>May 12, 2026</span>&nbsp;·&nbsp;<span>3 min</span>&nbsp;·&nbsp;<span>Krishna Raj</span>
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#deep-dive-transformer-architecture--mechanics" aria-label="Deep Dive: Transformer Architecture &amp; Mechanics">Deep Dive: Transformer Architecture &amp; Mechanics</a><ul>
+                        
+                <li>
+                    <a href="#1-the-core-challenge-parallelism" aria-label="1. The Core Challenge: Parallelism">1. The Core Challenge: Parallelism</a><ul>
+                        
+                <li>
+                    <a href="#the-solution-positional-encoding-pe" aria-label="The Solution: Positional Encoding (PE)">The Solution: Positional Encoding (PE)</a></li></ul>
+                </li>
+                <li>
+                    <a href="#2-self-attention-mechanism" aria-label="2. Self-Attention Mechanism">2. Self-Attention Mechanism</a><ul>
+                        
+                <li>
+                    <a href="#the-qkv-transformation" aria-label="The QKV Transformation">The QKV Transformation</a></li>
+                <li>
+                    <a href="#cite_startstep-by-step-calculationcite-957" aria-label="[cite_start]Step-by-Step Calculation[cite: 957]:">[cite_start]Step-by-Step Calculation[cite: 957]:</a></li></ul>
+                </li>
+                <li>
+                    <a href="#3-multi-head-attention" aria-label="3. Multi-Head Attention">3. Multi-Head Attention</a></li>
+                <li>
+                    <a href="#4-layer-normalization" aria-label="4. Layer Normalization">4. Layer Normalization</a></li>
+                <li>
+                    <a href="#5-cross-attention" aria-label="5. Cross-Attention">5. Cross-Attention</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
   <div class="post-content"><p>\</p>
 <h1 id="deep-dive-transformer-architecture--mechanics">Deep Dive: Transformer Architecture &amp; Mechanics<a hidden class="anchor" aria-hidden="true" href="#deep-dive-transformer-architecture--mechanics">#</a></h1>
 <p><strong>Class Date:</strong> May 3, 2026<br>
@@ -219,12 +253,21 @@ Topic: Positional Encoding, Self-Attention, and Layer Normalization
 
   <footer class="post-footer">
     <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/transformer/">Transformer</a></li>
+      <li><a href="http://localhost:1313/tags/mathematics/">Mathematics</a></li>
+      <li><a href="http://localhost:1313/tags/linear-algebra/">Linear Algebra</a></li>
+      <li><a href="http://localhost:1313/tags/qkv/">QKV</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/posts/blog2/">
+  <a class="prev" href="http://localhost:1313/posts/transformer-5/">
     <span class="title">« Prev</span>
     <br>
-    <span>How I Built an AI Chatbot</span>
+    <span>Transformer 5: The QKV Mathematical Engine</span>
+  </a>
+  <a class="next" href="http://localhost:1313/posts/transformer-7/">
+    <span class="title">Next »</span>
+    <br>
+    <span>Transformer 7: he Transformer Decoder: Mechanics and Autoregressive Inference</span>
   </a>
 </nav>
 
